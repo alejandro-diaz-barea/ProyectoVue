@@ -1,10 +1,10 @@
 <template>
     <section>
         <h1 class="titulo">Contact  us</h1>
-        <input type="email" class="campo-input campo-email" placeholder="Email" v-model="email">
-        <p v-if="!emailValido" class="mensaje-error">Por favor ingrese un email válido.</p>
-        <textarea class="campo-input campo-texto" placeholder="Texto" v-model="texto"></textarea>
-        <p v-if="!textoValido" class="mensaje-error">Por favor ingrese al menos 10 caracteres.</p>
+        <input type="email" class="campo-input campo-email" placeholder="Email" v-model="email" @blur="validarEmail">
+        <p v-if="!emailValido && email !== ''" class="mensaje-error">Por favor ingrese un email válido.</p>
+        <textarea class="campo-input campo-texto" placeholder="Texto" v-model="texto" @blur="validarTexto"></textarea>
+        <p v-if="!textoValido && texto !== ''" class="mensaje-error">Por favor ingrese al menos 10 caracteres.</p>
         <button class="boton-enviar" @click="enviarFormulario">Enviar</button>
         <p v-if="enviadoConExito" class="mensaje-exito">Entregado con éxito!</p>
     </section>
@@ -54,6 +54,8 @@ export default{
 }
 </script>
 
+
+
 <style scoped>
 
 section {
@@ -61,8 +63,8 @@ section {
     align-items: center;
     flex-direction: column;
     position: relative;
-    min-height: 100vh;
-    height: 80vh;
+    min-height: 90vh;
+    height: 69vh;
     background-image: url("../../../assets/imageComic.webp");
 }
 
@@ -90,6 +92,7 @@ section::before {
     -webkit-text-stroke-width: 0.1rem ;
     -webkit-text-stroke-color: black;
     margin-bottom: 1rem;
+    margin-top: 1rem;
     font-family: 'Bangers', sans-serif;
 
 }

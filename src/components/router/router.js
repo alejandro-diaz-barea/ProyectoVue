@@ -30,6 +30,9 @@ const routes = [
   { path: '/perfil', 
   component: () => import('../comics/pages/Profile.vue') },
 
+  { path: '/parfil/carrito', 
+  component: () => import('../comics/pages/Carrito.vue') },
+
   { path: '/:pathMatch(.*)*', 
   component: () => import('../comics/pages/NotFound404.vue') }
 ]
