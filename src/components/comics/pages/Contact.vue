@@ -57,14 +57,12 @@ export default{
 
 
 <style scoped>
-
 section {
     display: flex;
     align-items: center;
     flex-direction: column;
     position: relative;
-    min-height: 90vh;
-    height: 69vh;
+    min-height: 72.3vh;
     background-image: url("../../../assets/imageComic.webp");
 }
 
@@ -75,17 +73,16 @@ section::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: inherit; /* Heredamos la imagen de fondo del nav */
-    filter: contrast(50%) brightness(100%); /* Aplicamos el filtro solo a la capa pseudo-elemento */
+    background-image: inherit;
+    filter: contrast(50%) brightness(100%);
 }
 
 .titulo,
 .campo-input,
 .boton-enviar {
     color: rgb(255, 255, 255);
-    z-index: 1; /* Aseguramos que estén por encima del pseudo-elemento */
+    z-index: 1;
 }
-
 
 .titulo {
     font-size: 3.125rem;
@@ -94,7 +91,6 @@ section::before {
     margin-bottom: 1rem;
     margin-top: 1rem;
     font-family: 'Bangers', sans-serif;
-
 }
 
 .campo-input {
@@ -110,12 +106,12 @@ section::before {
 .mensaje-error{
     z-index: 1;
     color: red;
-
 }
 
 .campo-email{
     height: 5%;
 }
+
 .campo-texto {
     height: 10rem; 
     padding: 0.5rem;
@@ -134,7 +130,7 @@ section::before {
     height: 7.03125%;
     width: 15%;
     font-family: 'Bangers', sans-serif;
-
+    margin-bottom: 20px;
 }
 
 .boton-enviar:hover {
@@ -145,4 +141,6 @@ section::before {
     z-index: 1;
     color: green;
 }
+
+
 </style>

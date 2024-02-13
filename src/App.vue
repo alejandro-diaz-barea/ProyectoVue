@@ -21,7 +21,7 @@ export default{
 </template>
 
 <style >
-body {
+html,body {
   margin: 0;
 }
 

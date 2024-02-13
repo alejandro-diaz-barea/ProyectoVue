@@ -8,10 +8,6 @@
     </section>
 </template>
 
-<script>
-
-</script>
-
 <style scoped>
 .error-page {
     display: flex;
@@ -23,13 +19,14 @@
 
 .error-page__content {
     text-align: center; 
-    overflow: auto; 
+    overflow: hidden; 
+    max-width: 100%; 
 }
 
 .error-page__title {
     font-size: 5rem;
     margin: 0; 
-    line-height: 1; /* Ajuste del line-height */
+    line-height: 1; 
 }
 
 .error-page__subtitle {
@@ -40,5 +37,15 @@
 .error-page__image {
     width: 15rem;
     max-width: 300px;
+    animation: enlargeAndRotate 1.5s linear forwards; 
+}
+
+@keyframes enlargeAndRotate {
+    0% {
+        transform: scale(0.5) rotate(0deg);
+    }
+    100% {
+        transform: scale(1) rotate(360deg); 
+    }
 }
 </style>

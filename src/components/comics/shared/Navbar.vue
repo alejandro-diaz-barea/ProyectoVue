@@ -119,23 +119,5 @@
     height: auto;
 }
 
-@media only screen and (max-width: 768px) {
-    .header {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-  
-    .nav__list {
-        flex-direction: column;
-    }
-  
-    .nav__item {
-        margin: 0.5rem 0;
-    }
-  
-    .header__buttons {
-        margin-right: 0.5rem;
-    }
-}
 
 </style>
