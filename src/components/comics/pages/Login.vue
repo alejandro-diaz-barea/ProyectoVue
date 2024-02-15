@@ -13,47 +13,48 @@
         <img src="../../../assets/fotoLogin.jpg" class="foto-login">
       </div>
     </section>
-  </template>
-  
-  <script>
-  export default {
+</template>
+
+<script>
+export default {
     data() {
-      return {
-        email: "",
-        emailValido: true,
-        password: "",
-        passwordValido: true,
-        enviadoConExito: false,
-      }
+        return {
+            email: "",
+            emailValido: true,
+            password: "",
+            passwordValido: true,
+            enviadoConExito: false,
+        }
     },
     methods: {
-      enviarFormulario() {
-        if (this.emailValido && this.passwordValido) {
-          console.log('enviando...')
-          // Envío exitoso después de 2 segundos
-          setTimeout(() => {
-            this.enviadoConExito = true;
-            this.$router.push('/');
-            this.resetearFormulario();
-          }, 1000)
+        enviarFormulario() {
+            if (this.emailValido && this.passwordValido && this.email && this.password) {
+                console.log('enviando...')
+                // Simula un envío exitoso después de 1 segundo
+                setTimeout(() => {
+                    this.enviadoConExito = true;
+                    this.$router.push('/');
+                    this.resetearFormulario();
+                }, 1000)
+            }
+        },
+        validarEmail() {
+            this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+        },
+        validarPassword() {
+            this.passwordValido = this.password.trim() !== '';
+        },
+        resetearFormulario() {
+            this.email = '';
+            this.emailValido = true;
+            this.password = '';
+            this.passwordValido = true;
+            this.enviadoConExito = false;
         }
-      },
-      validarEmail() {
-        this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
-      },
-      validarPassword() {
-        this.passwordValido = this.password.trim() !== '';
-      },
-      resetearFormulario() {
-        this.email = '';
-        this.emailValido = true;
-        this.password = '';
-        this.passwordValido = true;
-        this.enviadoConExito = false;
-      }
     }
-  }
-  </script>
+}
+</script>
+
   
   
   
@@ -131,4 +132,10 @@
 .login-container .header {
     display: none;
 }
+
+.mensaje-error{
+    color: red;
+    margin-bottom: 0;
+
+  }
 </style>

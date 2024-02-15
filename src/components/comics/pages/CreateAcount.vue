@@ -81,6 +81,7 @@
   .signup-container {
     display: flex;
     min-height: 80vh;
+    height: 90vh;
   }
   
   .signup-form {
@@ -142,6 +143,14 @@
   
   .signup-container .header {
     display: none;
+  }
+
+
+  .mensaje-error{
+    height: 1px;
+    margin: 0.5rem;
+    color: red;
+
   }
   </style>
   

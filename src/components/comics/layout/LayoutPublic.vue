@@ -1,5 +1,4 @@
 <template>
-    <h1>layout public</h1>
       <router-view />
   </template>
   
