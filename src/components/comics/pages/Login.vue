@@ -1,53 +1,62 @@
 <template>
     <section class="login-container">
-            <article class="login-form">
-                <!-- <img src="../../../assets/logoVue.png" class="logo-vue"> -->
-                <h1 class="login_title">Login</h1>
-                <input type="email" class="campo-input campo-email" placeholder="Email" v-model="email">
-                <p v-if="!emailValido" class="mensaje-error">Por favor ingrese un correo electrónico válido.</p>
-                <input type="password" class="campo-input campo-password" placeholder="Password">
-                <button class="boton-login" @click="enviarFormulario">LOGIN</button>
-                <p>Don't have an account yet? <router-link to="/signUp">Sign up</router-link></p>
-            </article>
-            <div class="login-image">
-                <img src="../../../assets/fotoLogin.jpg" class="foto-login">
-            </div>
+      <article class="login-form">
+        <h1 class="login_title">Login</h1>
+        <input type="email" class="campo-input campo-email" placeholder="Email" v-model.trim="email" @blur="validarEmail">
+        <p v-if="!emailValido" class="mensaje-error">Por favor ingrese un correo electrónico válido.</p>
+        <input type="password" class="campo-input campo-password" placeholder="Password" v-model="password" @blur="validarPassword">
+        <p v-if="!passwordValido" class="mensaje-error">Por favor ingrese una contraseña.</p>
+        <button class="boton-login" @click="enviarFormulario">LOGIN</button>
+        <p>Don't have an account yet? <router-link to="/signUp">Sign up</router-link></p>
+      </article>
+      <div class="login-image">
+        <img src="../../../assets/fotoLogin.jpg" class="foto-login">
+      </div>
     </section>
-</template>
-
-<script>
-
-export default {
+  </template>
+  
+  <script>
+  export default {
     data() {
-        return {
-            email: "",
-            emailValido: true,
-            enviadoConExito: false,
-        }
+      return {
+        email: "",
+        emailValido: true,
+        password: "",
+        passwordValido: true,
+        enviadoConExito: false,
+      }
     },
     methods: {
-        enviarFormulario() {
-            this.validarEmail();
-            if (this.emailValido) {
-                console.log('Formulario válido, enviando...')
-                // Envío exitoso después de 2 segundos
-                setTimeout(() => {
-                    this.enviadoConExito = true;
-                    this.resetearFormulario();
-                }, 2000)
-            }
-        },
-        validarEmail() {
-            this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
-        },
-        resetearFormulario() {
-            this.email = '';
-            this.emailValido = true;
-            this.enviadoConExito = false;
+      enviarFormulario() {
+        if (this.emailValido && this.passwordValido) {
+          console.log('enviando...')
+          // Envío exitoso después de 2 segundos
+          setTimeout(() => {
+            this.enviadoConExito = true;
+            this.$router.push('/');
+            this.resetearFormulario();
+          }, 1000)
         }
+      },
+      validarEmail() {
+        this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+      },
+      validarPassword() {
+        this.passwordValido = this.password.trim() !== '';
+      },
+      resetearFormulario() {
+        this.email = '';
+        this.emailValido = true;
+        this.password = '';
+        this.passwordValido = true;
+        this.enviadoConExito = false;
+      }
     }
-}
-</script>
+  }
+  </script>
+  
+  
+  
 
 <style scoped>
 .login-container {

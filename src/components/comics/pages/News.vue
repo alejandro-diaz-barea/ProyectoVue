@@ -14,10 +14,6 @@
             <img class="news_item_photo"  src="../../../assets/defaultPhoto.png">
             <p>Contenido de la Noticia 3</p>
         </div>
-        <div class="news_item">
-          <img class="news_item_photo"  src="../../../assets/defaultPhoto.png">
-        <p>Contenido de la Noticia 1</p>
-      </div>
       </div>
     </section>
   </template>

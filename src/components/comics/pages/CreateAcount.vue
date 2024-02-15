@@ -4,13 +4,16 @@
         <img src="../../../assets/fotoLogin.jpg" class="foto-login">
       </div>
       <article class="signup-form">
-        <!-- <img src="../../../assets/logoVue.png" class="logo-vue"> -->
         <h1 class="signup_title">SIGN UP</h1>
-        <input type="text" class="campo-input campo-username" placeholder="Username" v-model="email">
-        <input type="email" class="campo-input campo-email" placeholder="Email" v-model="email">
-        <input type="password" class="campo-input campo-password" placeholder="Password">
-        <input type="password" class="campo-input campo-repeat-password" placeholder="RepeatPassword">
-        <button class="boton-login" @click="enviarFormulario">LOGIN</button>
+        <input type="text" class="campo-input campo-username" placeholder="Username" v-model="username" @blur="validarUsername">
+        <p v-if="!usernameValido" class="mensaje-error">El nombre de usuario debe tener al menos 5 caracteres.</p>
+        <input type="email" class="campo-input campo-email" placeholder="Email" v-model="email" @blur="validarEmail">
+        <p v-if="!emailValido" class="mensaje-error">Por favor ingrese un correo electrónico válido.</p>
+        <input type="password" class="campo-input campo-password" placeholder="Password" v-model="password" @blur="validarContrasenas">
+        <p v-if="!contrasenaLarga" class="mensaje-error">La contraseña debe tener al menos 8 caracteres.</p>
+        <input type="password" class="campo-input campo-repeat-password" placeholder="Repeat Password" v-model="repeatPassword" @blur="validarContrasenas">
+        <p v-if="!contrasenasIguales" class="mensaje-error">Las contraseñas no coinciden.</p>
+        <button class="boton-login" @click="enviarFormulario">SIGN UP</button>
         <p>If you already have an account, <router-link to="/login">Log in </router-link></p>
       </article>
     </section>
@@ -20,40 +23,64 @@
   export default {
     data() {
       return {
+        username: "",
+        usernameValido: true,
         email: "",
         emailValido: true,
+        password: "",
+        repeatPassword: "",
+        contrasenasIguales: true,
+        contrasenaLarga: true,
         enviadoConExito: false,
       }
     },
     methods: {
       enviarFormulario() {
+        this.validarUsername();
         this.validarEmail();
-        if (this.emailValido) {
-          console.log('Formulario válido, enviando...')
+        this.validarContrasenas();
+        if (this.usernameValido && this.emailValido && this.contrasenasIguales && this.contrasenaLarga) {
+          console.log('enviando...')
           // Envío exitoso después de 2 segundos
           setTimeout(() => {
             this.enviadoConExito = true;
             this.resetearFormulario();
+            this.$router.push('/login');
           }, 2000)
         }
+      },
+      validarUsername() {
+        this.usernameValido = this.username.length >= 5;
       },
       validarEmail() {
         this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
       },
+      validarContrasenas() {
+        this.contrasenasIguales = this.password === this.repeatPassword;
+        this.contrasenaLarga = this.password.length > 7;
+      },
       resetearFormulario() {
+        this.username = '';
+        this.usernameValido = true;
         this.email = '';
         this.emailValido = true;
+        this.password = '';
+        this.repeatPassword = '';
+        this.contrasenasIguales = true;
+        this.contrasenaLarga = true;
         this.enviadoConExito = false;
       }
     }
   }
   </script>
   
+  
+  
+  
   <style scoped>
   .signup-container {
     display: flex;
-    min-height: 69vh;
-    height: 80vh;
+    min-height: 80vh;
   }
   
   .signup-form {
@@ -63,12 +90,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
   }
   
   .signup-image {
     width: 50%;
-    height: 100%;
+    min-height: 80vh;
     padding: 0%;
     margin: 0;
   }
