@@ -6,7 +6,7 @@
       <article class="signup-form">
         <h1 class="signup_title">SIGN UP</h1>
         <input type="text" class="campo-input campo-username" placeholder="Username" v-model="username" @blur="validarUsername">
-        <p v-if="!usernameValido" class="mensaje-error">El nombre de usuario debe tener al menos 5 caracteres.</p>
+        <p   v-if="!usernameValido" class="mensaje-error">El nombre de usuario debe tener al menos 5 caracteres.</p>
         <input type="email" class="campo-input campo-email" placeholder="Email" v-model="email" @blur="validarEmail">
         <p v-if="!emailValido" class="mensaje-error">Por favor ingrese un correo electrónico válido.</p>
         <input type="password" class="campo-input campo-password" placeholder="Password" v-model="password" @blur="validarContrasenas">
@@ -14,7 +14,7 @@
         <input type="password" class="campo-input campo-repeat-password" placeholder="Repeat Password" v-model="repeatPassword" @blur="validarContrasenas">
         <p v-if="!contrasenasIguales" class="mensaje-error">Las contraseñas no coinciden.</p>
         <button class="boton-login" @click="enviarFormulario">SIGN UP</button>
-        <p>If you already have an account, <router-link to="/login">Log in </router-link></p>
+        <p class="p">If you already have an account, <router-link to="/login">Log in </router-link></p>
       </article>
     </section>
   </template>
@@ -80,8 +80,8 @@
   <style scoped>
   .signup-container {
     display: flex;
-    min-height: 80vh;
-    height: 90vh;
+    min-height: 74vh;
+    height: 80vh;
   }
   
   .signup-form {
@@ -91,11 +91,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
   
   .signup-image {
     width: 50%;
-    min-height: 80vh;
+    height: 100%;
     padding: 0%;
     margin: 0;
   }
@@ -130,9 +131,9 @@
     border-radius: 3.125rem;
     border: none;
     cursor: pointer;
-    margin-top: 2rem;
-    height: 10%;
-    width: 30%;
+    margin-top: 1rem;
+    height: 2rem;
+    width: 8rem;
     font-family: 'Bangers', sans-serif;
     margin-bottom: 20px;
   }
@@ -150,7 +151,45 @@
     height: 1px;
     margin: 0.5rem;
     color: red;
+    width: 400px;
+    text-align: center;
+
 
   }
+
+
+  
+/* Media query para 1200 */
+@media screen and (max-width: 1200px) {
+
+  .campo-input{
+      width: 300px;
+  }
+ 
+} 
+
+/* Media query para 700 */
+@media screen and (max-width: 700px) {
+  .signup-container {
+      justify-content: center;
+  }
+  .signup-image{
+      display: none;
+  }
+
+  .p{
+      width: 300px;
+      text-align: center;
+
+  }
+}
+
+/* Media query para 450 */
+@media screen and (max-width: 450px) {
+  .signup_title{
+    font-size: 2rem;
+
+  }
+}
   </style>
   

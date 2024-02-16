@@ -105,7 +105,8 @@ section::before {
 
 .mensaje-error{
     z-index: 1;
-    color: red;
+    color: white;
+    background-color: red;
 }
 
 .campo-email{
@@ -113,7 +114,7 @@ section::before {
 }
 
 .campo-texto {
-    height: 10rem; 
+    height: 25rem; 
     padding: 0.5rem;
     margin-bottom: 1rem;
     font-size: 1.25rem;
@@ -127,8 +128,8 @@ section::before {
     border: none;
     cursor: pointer;
     margin-top: 1rem;
-    height: 7.03125%;
-    width: 15%;
+    height: 2rem;
+    width: 8rem;
     font-family: 'Bangers', sans-serif;
     margin-bottom: 20px;
 }
@@ -139,8 +140,21 @@ section::before {
 
 .mensaje-exito{
     z-index: 1;
-    color: green;
+    background-color: green;
+    color: white;
 }
 
+/* Media query para 951 */
+@media screen and (max-width: 951px) {
+    section {
+        min-height: 74.5vh;
+    }
+}
 
+/* Media query para 550 */
+@media screen and (max-width: 550px) {
+    .campo-input{
+        width: 250px
+    }
+}
 </style>

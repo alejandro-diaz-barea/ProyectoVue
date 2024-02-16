@@ -7,7 +7,7 @@
         <input type="password" class="campo-input campo-password" placeholder="Password" v-model="password" @blur="validarPassword">
         <p v-if="!passwordValido" class="mensaje-error">Por favor ingrese una contraseña.</p>
         <button class="boton-login" @click="enviarFormulario">LOGIN</button>
-        <p>Don't have an account yet? <router-link to="/signUp">Sign up</router-link></p>
+        <p class="dontAcount">Don't have an account yet? <router-link to="/signUp">Sign up</router-link></p>
       </article>
       <div class="login-image">
         <img src="../../../assets/fotoLogin.jpg" class="foto-login">
@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { UserContext } from "../store/UserContext";
+
 export default {
     data() {
         return {
@@ -33,6 +35,9 @@ export default {
                 // Simula un envío exitoso después de 1 segundo
                 setTimeout(() => {
                     this.enviadoConExito = true;
+                    // Accede al store de Pinia y llama a la acción logIn para establecer user como true
+                
+                    UserContext().logIn();
                     this.$router.push('/');
                     this.resetearFormulario();
                 }, 1000)
@@ -62,8 +67,8 @@ export default {
 <style scoped>
 .login-container {
     display: flex;
-    min-height: 80vh;
-    height: 80vh;
+    min-height: 74.5vh;
+    height: 74.5vh;
 }
 
 .login-form {
@@ -119,8 +124,8 @@ export default {
     border: none;
     cursor: pointer;
     margin-top: 1rem;
-    height: 10%;
-    width: 30%;
+    height: 2rem;
+    width: 8rem;
     font-family: 'Bangers', sans-serif;
     margin-bottom: 20px;
 }
@@ -137,5 +142,35 @@ export default {
     color: red;
     margin-bottom: 0;
 
-  }
+}
+
+
+/* Media query para 1200 */
+@media screen and (max-width: 1200px) {
+
+    .campo-input{
+        width: 300px;
+    }
+   
+  } 
+
+  /* Media query para 700 */
+@media screen and (max-width: 700px) {
+    .login-container {
+        justify-content: center;
+    }
+    .login-image{
+        display: none;
+    }
+
+    .dontAcount{
+        width: 300px;
+        text-align: center;
+
+    }
+
+
+   
+  } 
+
 </style>
