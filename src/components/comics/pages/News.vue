@@ -1,64 +1,98 @@
 <template>
-    <section class="news_container">
-      <h1>News</h1>
-      <div class="news_items">
-        <div class="news_item">
-            <img class="news_item_photo"  src="../../../assets/defaultPhoto.png">
-          <p>Contenido de la Noticia 1</p>
-        </div>
-        <div class="news_item">
-            <img class="news_item_photo"  src="../../../assets/defaultPhoto.png">
-            <p>Contenido de la Noticia 2</p>
-        </div>
-        <div class="news_item">
-            <img class="news_item_photo"  src="../../../assets/defaultPhoto.png">
-            <p>Contenido de la Noticia 3</p>
-        </div>
+  <section class="news-container">
+    <h1 class="news-container__title">News</h1>
+    <div class="news-items">
+      <div v-for="(news, index) in newsList.news.slice(0, 3)" :key="index" class="news-item">
+        <img class="news-item__photo" :src="news.image" alt="News Photo">
+        <h2 class="news-item__title">{{ news.title }}</h2>
+        <p class="news-item__description">{{ news.description }}</p>
       </div>
-    </section>
-  </template>
-  
-  <script>
+    </div>
+  </section>
+</template>
 
-  </script>
-  
-  <style scoped>
-  .news_container {
-    text-align: center;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+<script>
+export default {
+  data() {
+    return {
+      newsList: {
+        news: []
+      }
+    };
+  },
+  mounted() {
+    this.fetchNews();
+  },
+  methods: {
+    async fetchNews() {
+      try {
+        const response = await fetch('http://localhost/api/v1/news');
+        const data = await response.json();
+        this.newsList = data;
+        console.log(data)
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      }
+    }
   }
-  
-  .news_items {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px; 
-    margin-bottom: 20px;
-    height: 80%;
-  }
-  
-  .news_item {
-    width: 300px;
-    height: 100%; 
-    border: 1px solid #000000;
-    border-radius: 1rem;
-    box-sizing: border-box;
-    transition: transform 0.3s ease; 
-    overflow: hidden;
+};
+</script>
 
-  }
-  
-  .news_item:hover {
-    transform: scaleX(1.1);     
-  }
+<style scoped>
+.news-container {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto';
+}
 
-  .news_item_photo{
-    width: 100%;
-    height: 40%;
-    object-fit: cover;
+.news-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 20px; 
+  margin-bottom: 20px;
+}
+
+.news-item {
+  width: calc(33.33% - 20px); 
+  margin: 10px;
+  border: 1px solid #000000;
+  border-radius: 1rem;
+  box-sizing: border-box;
+  transition: transform 0.3s ease; 
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .news-item {
+    width: calc(50% - 20px); 
   }
-  
-  </style>
-  
+}
+
+@media (max-width: 480px) {
+  .news-item {
+    width: calc(100% - 20px); 
+  }
+}
+
+.news-item:hover {
+  transform: scaleX(1.1);     
+}
+
+.news-item__photo {
+  width: 100%;
+  height: 40%;
+  object-fit: cover;
+}
+
+.news-item__title,
+.news-item__description {
+  height: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+</style>

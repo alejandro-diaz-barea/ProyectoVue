@@ -16,16 +16,16 @@
         </li>
       </ul>
     </nav>
-    <nav class="header__buttons" v-if="!user">
-      <a  class="buttons_DarkMode">
+    <nav class="header__buttons" >
+      <!-- Icono de Dark Mode -->
+      <a class="buttons_DarkMode">
         <img class="ImagenDarkMode" src="../../../assets/modo-de-sueno.png" alt="darkmode">
       </a>
-      <button @click="goToLoginPage" class="buttons__login">LOGIN</button>
-      <button @click="goToSignUpPage" class="buttons__signup">SIGN UP</button>
+      <button v-if="!user" @click="goToLoginPage" class="buttons__login">LOGIN</button>
+      <button v-if="!user" @click="goToSignUpPage" class="buttons__signup">SIGN UP</button>
+      <button v-else @click="logOut" class="buttons__logout">LOGOUT</button>
     </nav>
-    <nav class="header__buttons" v-else>
-      <button @click="logOut" class="buttons__logout">LOGOUT</button>
-    </nav>
+
     <!-- Icono de hamburguesa para mostrar el menú desplegable -->
     <nav class="hamburger-icon" @click="toggleMenu">
       <div class="line"></div>
@@ -41,7 +41,8 @@
       <button @click="goToLoginPage" class="buttons__login" v-if="!user">LOGIN</button>
       <button @click="goToSignUpPage" class="buttons__signup" v-if="!user">SIGN UP</button>
       <button @click="logOut" class="buttons__logout" v-else>LOGOUT</button>
-      <a  class="buttons_DarkMode">
+      <!-- Icono de Dark Mode -->
+      <a class="buttons_DarkMode">
         <img class="ImagenDarkMode" src="../../../assets/modo-de-sueno.png" alt="darkmode">
       </a>
     </nav>
@@ -59,11 +60,9 @@ export default {
   },
   computed: {
     user() {
-    return UserContext().user; 
-  }
-
-},
-
+      return UserContext().user; 
+    }
+  },
   methods: {
     goToLoginPage() {
       this.$router.push('/login');
@@ -82,7 +81,6 @@ export default {
     logOut() {
       UserContext().logOut(); // Llamar a la acción logOut para cerrar sesión
     }
-
   }
 }
 </script>
@@ -386,7 +384,7 @@ export default {
     margin-right: 0;
   }
 
-  .header .header__buttons .buttons__login {
+  .header .header_buttons .buttons_login {
     background-color: #CACACA;
     color: black;
   }
