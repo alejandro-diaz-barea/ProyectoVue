@@ -1,13 +1,13 @@
 <template>
   <section class="news-container">
     <h1 class="news-container__title">News</h1>
-    <div class="news-items">
-      <div v-for="(news, index) in newsList.news.slice(0, 3)" :key="index" class="news-item">
+    <article class="news-items">
+      <figure v-for="(news, index) in newsList.news.slice(0, 3)" :key="index" class="news-item">
         <img class="news-item__photo" :src="news.image" alt="News Photo">
         <h2 class="news-item__title">{{ news.title }}</h2>
         <p class="news-item__description">{{ news.description }}</p>
-      </div>
-    </div>
+      </figure>
+    </article>
   </section>
 </template>
 
