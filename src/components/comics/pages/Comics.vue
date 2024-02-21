@@ -1,62 +1,79 @@
 <template>
-    <section class="content-wrapper">
-      <article class="header">
-        <header class="header__content">
-          <SearcherComponent></SearcherComponent>
-          <DropdownComponent></DropdownComponent>
-          <img class="header_content_carrito" src="../../../assets/carrito-de-compras.png" alt="Carrito de compras">
-        </header>
-      </article>
-      <article class="cards-container">
-        <figure v-for="card in cards" :key="card.id" class="card">
-          <img :src="card.imageUrl" class="img">
-          <h2 class="card__title">{{ card.title }}</h2>
-          <p class="card__price">{{ card.price }}</p>
-          <div class="rating">
-            <span v-for="n in 5" :key="n" class="star" @click="rate(card, n)" :class="{ 'filled': n <= card.rating }">&#9733;</span>
-          </div>
-          <div class="cart-container">
-            <select class="cart-container__select" v-model="card.quantity">
-              <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-            </select>
-            <img src="../../../assets/carro-de-la-compra.png" class="cart-icon" alt="Carrito de compras">
-          </div>
-        </figure>
-      </article>
-      <footer class="pagination"><PaginationComponent></PaginationComponent></footer>
-    </section>
-  </template>
-  
-  <script>
-  import SearcherComponent from '../components/SearcherComponent.vue';
-  import DropdownComponent from '../components/DropdownComponent.vue';
-  import PaginationComponent from '../components/PaginationComponent.vue';
-  
-  export default {
-    components: { SearcherComponent, DropdownComponent, PaginationComponent },
-    data() {
-      return {
-        cards: [
-          { id: 1, title: 'Título del Card 1', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 2, title: 'Título del Card 2', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 3, title: 'Título del Card 3', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 4, title: 'Título del Card 4', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 5, title: 'Título del Card 5', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 6, title: 'Título del Card 6', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 7, title: 'Título del Card 7', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 8, title: 'Título del Card 8', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 9, title: 'Título del Card 9', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" },
-          { id: 10, title: 'Título del Card 10', price: "19.99€", rating: 0, quantity: 1, imageUrl: "https://i.annihil.us/u/prod/marvel/i/mg/1/30/56538fd257915.jpg" }
-        ]
-      };
+  <section class="content-wrapper">
+    <article class="header">
+      <header class="header__content">
+        <SearcherComponent></SearcherComponent>
+        <DropdownComponent></DropdownComponent>
+        <img class="header_content_carrito" src="../../../assets/carrito-de-compras.png" alt="Carrito de compras">
+      </header>
+    </article>
+    <article class="cards-container">
+      <figure v-for="card in cards" :key="card.id" class="card">
+        <img :src="card.imageUrl" class="img">
+        <h2 class="card__title">{{ card.title }}</h2>
+        <p class="card__price">{{ card.price }} €</p>
+        <div class="rating">
+          <span v-for="n in 5" :key="n" class="star" @click="rate(card, n)" :class="{ 'filled': n <= card.rating }">&#9733;</span>
+        </div>
+        <div class="cart-container">
+          <select class="cart-container__select" v-model="card.quantity">
+            <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
+          </select>
+          <img src="../../../assets/carro-de-la-compra.png" class="cart-icon" alt="Carrito de compras">
+        </div>
+      </figure>
+    </article>
+    <footer class="pagination"><PaginationComponent></PaginationComponent></footer>
+  </section>
+</template>
+
+<script>
+import SearcherComponent from '../components/SearcherComponent.vue';
+import DropdownComponent from '../components/DropdownComponent.vue';
+import PaginationComponent from '../components/PaginationComponent.vue';
+
+export default {
+  components: { SearcherComponent, DropdownComponent, PaginationComponent },
+  data() {
+    return {
+      cards: []
+    };
+  },
+  methods: {
+    rate(card, rating) {
+      card.rating = rating; // Actualiza la valoracion del comic
     },
-    methods: {
-      rate(card, rating) {
-        card.rating = rating; // Actualizar la valoración del cómic
-      }
+    fetchComics() {
+      const comicsUrl = 'http://localhost/api/v1/comics';
+
+      fetch(comicsUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
+          this.cards = data.comics.map(comic => ({
+            id: comic.id,
+            title: comic.title,
+            price: comic.price,
+            rating: 0,
+            quantity: 1,
+            imageUrl: comic.image_url
+          }));
+        })
+        .catch(error => {
+          console.error('Error fetching comics:', error);
+        });
     }
+  },
+  created() {
+    this.fetchComics();
   }
-  </script>
+};
+</script>
   
   <style scoped>
   .content-wrapper{
@@ -110,6 +127,7 @@
     display: flex;
     align-items: center; 
     justify-content: center;
+    font-size: 1rem;
   }
   
   .card__price{
@@ -146,7 +164,7 @@
     align-items: center;
     margin-top: 1rem;
     justify-content: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 4rem;
   }
   
   .cart-icon {
@@ -156,7 +174,7 @@
   }
   .img{
     width: 100%;
-    height: auto;
+    height: 60%;
     object-fit: cover;
   }
   
