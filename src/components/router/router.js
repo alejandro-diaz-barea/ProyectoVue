@@ -9,9 +9,8 @@ const routes = [
         children: [
             {
               path: '',
-              component:News
+              component: News
             },
-
             {
               path: 'contact',
               component: () => import('../comics/pages/Contact.vue')
@@ -23,19 +22,15 @@ const routes = [
             {
               path: 'ofertas',
               component: () => import('../comics/pages/Ofertas.vue'),
-                     
             },
             {
               path: 'login',
               component: () => import('../comics/pages/Login.vue'),
-                     
             },
             {
               path: 'signUp',
               component: () => import('../comics/pages/CreateAcount.vue'),
-                     
             },
-
         ]
     },
     {
@@ -43,47 +38,44 @@ const routes = [
         component: () => import("../comics/layout/LayoutPrivate.vue"),
         children: [
             {
-              path: '/detallesComics',
+              path: 'details-comics/:id', // Ruta con parámetro ':id'
+              name: 'details-comics', // Nombre de la ruta
               beforeEnter: (to, from, next) => {
                   const loggedIn = checkAuthentication()
                   if (!loggedIn) {
-                      next('/')
+                      next('/login')
                   } else {
                       next()
                   }
               },
               component: () => import('../comics/pages/DetallesComics.vue')
-              },
-              {
+            },
+            {
               path: '/perfil',
               beforeEnter: (to, from, next) => {
                   const loggedIn = checkAuthentication()
                   if (!loggedIn) {
-                      next('/public')
+                      next('/login')
                   } else {
                       next()
                   }
               },
-              
               component: () => import('../comics/pages/Profile.vue')
-              },
-              {
+            },
+            {
               path: '/perfil/carrito',
               beforeEnter: (to, from, next) => {
                   const loggedIn = checkAuthentication()
                   if (!loggedIn) {
-                      next('/public')
+                      next('/login')
                   } else {
                       next()
                   }
               },
-              
-
               component: () => import('../comics/pages/Carrito.vue')
-          },
+            },
         ]
     },
-
     {
       path: '/:pathMatch(.*)*',
       component: () => import('../comics/pages/NotFound404.vue')

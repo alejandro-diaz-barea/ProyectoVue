@@ -1,24 +1,30 @@
 <template>
-    <form @submit.prevent="search" class="search-form">
-      <div class="search">
-        <input type="text" id="searchQuery" v-model="searchQuery" placeholder="Search" class="search__input">
-        <button type="submit" class="search__button">
-          <img src="../../../assets/lupaLogo.png" alt="Search">
-        </button>
-      </div>
-    </form>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        searchQuery: '',
-        searchResults: []
-      };
-    },
-  };
-  </script>
+  <form @submit.prevent="search" class="search-form">
+    <div class="search">
+      <input type="text" v-model="searchQuery" placeholder="Search" class="search__input">
+      <button type="submit" class="search__button">
+        <img src="../../../assets/lupaLogo.png" alt="Search">
+      </button>
+    </div>
+  </form>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      searchQuery: ''
+    };
+  },
+  methods: {
+    search() {
+      this.$emit('search', this.searchQuery);
+    }
+  }
+};
+</script>
+
+
   
   <style scoped>
   .search-form {
@@ -49,6 +55,7 @@
     border-radius: 0 4px 4px 0;
     cursor: pointer;
     background-color: transparent; /* Hace que el fondo del botón se vea transparente */
+    width: 20%;
   }
   
   img {

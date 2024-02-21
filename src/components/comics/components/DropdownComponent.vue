@@ -1,17 +1,29 @@
 <template>
-    <section class="order-selector">
-      <select id="orderBy" class="order-selector__select">
-        <option value="">ORDER BY</option> <!-- Opción por defecto -->
-        <option value="priceDesc">Precio</option>
-        <option value="nameDesc">Nombre</option>
-      </select>
-    </section>
-  </template>
-  
-  <script>
+  <section class="order-selector">
+    <select id="orderBy" v-model="selectedOrder" @change="applyFilter" class="order-selector__select">
+      <option value="">ORDER BY</option>
+      <option value="price">Precio</option>
+      <option value="title">Nombre</option>
+    </select>
+  </section>
+</template>
 
-  </script>
-  
+<script>
+export default {
+  data() {
+    return {
+      selectedOrder: ''
+    };
+  },
+  methods: {
+    applyFilter() {
+      this.$emit('filter', this.selectedOrder);
+    }
+  }
+};
+</script>
+
+
   <style scoped>
   .order-selector {
     height: 100%;

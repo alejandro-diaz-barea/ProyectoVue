@@ -79,6 +79,7 @@ export default {
       this.showMenu = !this.showMenu;
     },
     logOut() {
+      this.$router.push('/')
       UserContext().logOut(); // Llamar a la acción logOut para cerrar sesión
     }
   }

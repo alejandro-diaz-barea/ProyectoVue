@@ -2,14 +2,16 @@
   <section class="content-wrapper">
     <article class="header">
       <header class="header__content">
-        <SearcherComponent></SearcherComponent>
-        <DropdownComponent></DropdownComponent>
-        <img class="header_content_carrito" src="../../../assets/carrito-de-compras.png" alt="Carrito de compras">
+        <SearcherComponent @search="performSearch" />
+        <DropdownComponent @filter="applyFilter" />
+        <button class="header_content_carrito" @click="gotoCarrito">
+          <img class="header_content_carrito_imagen" src="../../../assets/carrito-de-compras.png" alt="Carrito de compras" />
+        </button>
       </header>
     </article>
     <article class="cards-container">
-      <figure v-for="card in cards" :key="card.id" class="card">
-        <img :src="card.imageUrl" class="img">
+      <figure v-for="card in displayedCards" :key="card.id" class="card" >
+        <img :src="card.imageUrl" class="img" @click="gotoDetails(card)"/>
         <h2 class="card__title">{{ card.title }}</h2>
         <p class="card__price">{{ card.price }} €</p>
         <div class="rating">
@@ -19,62 +21,104 @@
           <select class="cart-container__select" v-model="card.quantity">
             <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
           </select>
-          <img src="../../../assets/carro-de-la-compra.png" class="cart-icon" alt="Carrito de compras">
+          <img src="../../../assets/carro-de-la-compra.png" @click="addToCart(card)" class="cart-icon" alt="Carrito de compras" />        
         </div>
       </figure>
     </article>
-    <footer class="pagination"><PaginationComponent></PaginationComponent></footer>
+    <footer class="pagination">
+      <PaginationComponent :currentPage="currentPage" :totalPages="totalPages" @next-page="nextPage" @previous-page="previousPage" />
+    </footer>
   </section>
 </template>
 
 <script>
-import SearcherComponent from '../components/SearcherComponent.vue';
+import SearcherComponent from '../components/SearcherComponent.vue'; 
 import DropdownComponent from '../components/DropdownComponent.vue';
-import PaginationComponent from '../components/PaginationComponent.vue';
+import PaginationComponent from '../components/PaginationComponent.vue'; 
 
 export default {
-  components: { SearcherComponent, DropdownComponent, PaginationComponent },
+  components: { SearcherComponent, DropdownComponent, PaginationComponent }, 
+
   data() {
     return {
-      cards: []
+      cards: [], 
+      currentPage: 1, 
+      itemsPerPage: 10, 
+      selectedOrder: '', 
+      searchQuery: '', 
+      searchResults: [] 
     };
   },
-  methods: {
-    rate(card, rating) {
-      card.rating = rating; // Actualiza la valoracion del comic
-    },
-    fetchComics() {
-      const comicsUrl = 'http://localhost/api/v1/comics';
 
-      fetch(comicsUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log(data);
-          this.cards = data.comics.map(comic => ({
-            id: comic.id,
-            title: comic.title,
-            price: comic.price,
-            rating: 0,
-            quantity: 1,
-            imageUrl: comic.image_url
-          }));
-        })
-        .catch(error => {
-          console.error('Error fetching comics:', error);
-        });
+  computed: {
+    displayedCards() {
+      const cardsToDisplay = this.searchResults.length > 0 ? this.searchResults : this.cards; // Si hay resultados de busqueda los muestra y si no hay muestra todos (funcion que voy a cambiar)
+      const sortedCards = this.selectedOrder // Si hay un orden seleccionado
+        ? cardsToDisplay.slice().sort((a, b) => (this.selectedOrder === 'price') ? a.price - b.price : a.title.localeCompare(b.title)) // Ordenar por el selector
+        : cardsToDisplay; // si no  hay selector muestra sin orden
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage; // inicio de las tarjetas en la pagina actual
+      return sortedCards.slice(startIndex, startIndex + this.itemsPerPage); 
+    },
+
+    totalPages() {
+      return Math.ceil((this.searchResults.length > 0 ? this.searchResults : this.cards).length / this.itemsPerPage); // Calcula el número total de páginas basado en los resultados de búsqueda o todas las tarjetas
     }
   },
+
+  methods: {
+    gotoCarrito() {
+      this.$router.push('/perfil/carrito');
+    },
+
+    gotoDetails(card) {
+      this.$router.push({ name: 'details-comics', params: { id: card.id } });
+    },
+
+    rate(card, rating) {
+      // calificación de un cómic (cambiar por backend)
+      card.rating = rating;
+    },
+
+    fetchComics() {
+      const comicsUrl = 'http://localhost/api/v1/comics';
+      fetch(comicsUrl)
+        .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+        .then(data => {
+
+          this.cards = data.comics.map(comic => ({ id: comic.id, title: comic.title, price: comic.price, rating: 0, quantity: 1, imageUrl: comic.image_url }));
+        })
+        .catch(error => console.error('Error fetching comics:', error));
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) this.currentPage++;
+    },
+
+    previousPage() {
+      if (this.currentPage > 1) this.currentPage--;
+    },
+
+    performSearch(query) {
+      // Realiza una búsqueda de cómics basada en una consulta
+      this.searchQuery = query;
+      this.searchResults = (this.searchQuery === '') ? [] : this.cards.filter(card => card.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
+      this.currentPage = 1; // página actual después de realizar la búsqueda
+    },
+
+    applyFilter(order) {
+      // aplica el filtro de orden de las tarjetas de cómics
+      this.selectedOrder = order;
+    }
+  },
+
   created() {
-    this.fetchComics();
+    // Método que se ejecuta cuando se crea el componente
+    this.fetchComics(); 
   }
 };
+
 </script>
-  
+
   <style scoped>
   .content-wrapper{
     font-family: 'Roboto', sans-serif;
@@ -93,6 +137,12 @@ export default {
   }
   
   .header_content_carrito {
+    height: 100%; 
+    width: 50px;
+    
+  }
+
+  .header_content_carrito_imagen {
     height: 100%; 
     width: auto;
   }
