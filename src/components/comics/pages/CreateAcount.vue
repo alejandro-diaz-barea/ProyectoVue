@@ -1,82 +1,112 @@
 <template>
-    <section class="signup-container">
-      <div class="signup-image">
-        <img src="../../../assets/fotoLogin.jpg" class="foto-login">
-      </div>
-      <article class="signup-form">
-        <h1 class="signup_title">SIGN UP</h1>
-        <input type="text" class="campo-input campo-username" placeholder="Username" v-model="username" @blur="validarUsername">
-        <p   v-if="!usernameValido" class="mensaje-error">El nombre de usuario debe tener al menos 5 caracteres.</p>
-        <input type="email" class="campo-input campo-email" placeholder="Email" v-model="email" @blur="validarEmail">
-        <p v-if="!emailValido" class="mensaje-error">Por favor ingrese un correo electrónico válido.</p>
-        <input type="password" class="campo-input campo-password" placeholder="Password" v-model="password" @blur="validarContrasenas">
-        <p v-if="!contrasenaLarga" class="mensaje-error">La contraseña debe tener al menos 8 caracteres.</p>
-        <input type="password" class="campo-input campo-repeat-password" placeholder="Repeat Password" v-model="repeatPassword" @blur="validarContrasenas">
-        <p v-if="!contrasenasIguales" class="mensaje-error">Las contraseñas no coinciden.</p>
-        <button class="boton-login" @click="enviarFormulario">SIGN UP</button>
-        <p class="p">If you already have an account, <router-link to="/login">Log in </router-link></p>
-      </article>
-    </section>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        username: "",
-        usernameValido: true,
-        email: "",
-        emailValido: true,
-        password: "",
-        repeatPassword: "",
-        contrasenasIguales: true,
-        contrasenaLarga: true,
-        enviadoConExito: false,
+  <section class="signup-container">
+    <div class="signup-image">
+      <img src="../../../assets/fotoLogin.jpg" class="foto-login">
+    </div>
+    <article class="signup-form">
+      <h1 class="signup_title">SIGN UP</h1>
+      <input type="text" class="campo-input campo-username" placeholder="Username" v-model="name" @blur="validarNombre">
+      <p v-if="!nombreValido" class="mensaje-error">El nombre debe tener al menos 5 caracteres.</p>
+      <input type="email" class="campo-input campo-email" placeholder="Email" v-model="email" @blur="validarEmail">
+      <p v-if="!emailValido" class="mensaje-error">Por favor ingrese un correo electrónico válido.</p>
+      <input type="password" class="campo-input campo-password" placeholder="Password" v-model="password" @blur="validarContrasenas">
+      <p v-if="!contrasenaLarga" class="mensaje-error">La contraseña debe tener al menos 8 caracteres.</p>
+      <input type="password" class="campo-input campo-repeat-password" placeholder="Repeat Password" v-model="repeatPassword" @blur="validarContrasenas">
+      <p v-if="!contrasenasIguales" class="mensaje-error">Las contraseñas no coinciden.</p>
+      <button class="boton-login" @click="enviarFormulario" :disabled="submitDisabled">SIGN UP</button>
+      <p class="p">If you already have an account, <router-link to="/login">Log in </router-link></p>
+      <p v-if="registroExitoso" class="mensaje-exito">Registro exitoso. Redirigiendo...</p>
+      <p v-if="errorMessage" class="mensaje-error">{{ errorMessage }}</p>
+    </article>
+  </section>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      name: "",
+      nombreValido: true,
+      email: "",
+      emailValido: true,
+      password: "",
+      repeatPassword: "",
+      contrasenasIguales: true,
+      contrasenaLarga: true,
+      registroExitoso: false,
+      errorMessage: '',
+      submitDisabled: false,
+    }
+  },
+  methods: {
+    enviarFormulario() {
+      this.validarNombre();
+      this.validarEmail();
+      this.validarContrasenas();
+      if (this.nombreValido && this.emailValido && this.contrasenasIguales && this.contrasenaLarga) {
+        this.registrarUsuario();
       }
     },
-    methods: {
-      enviarFormulario() {
-        this.validarUsername();
-        this.validarEmail();
-        this.validarContrasenas();
-        if (this.usernameValido && this.emailValido && this.contrasenasIguales && this.contrasenaLarga) {
-          console.log('enviando...')
-          // Envío exitoso después de 2 segundos
-          setTimeout(() => {
-            this.enviadoConExito = true;
-            this.resetearFormulario();
-            this.$router.push('/login');
-          }, 2000)
+    validarNombre() {
+      this.nombreValido = this.name.length >= 5;
+    },
+    validarEmail() {
+      this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+    },
+    validarContrasenas() {
+      this.contrasenasIguales = this.password === this.repeatPassword;
+      this.contrasenaLarga = this.password.length > 7;
+    },
+    async registrarUsuario() {
+      try {
+        const formData = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+        };
+
+        const response = await fetch('http://localhost/api/v1/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Hubo un problema al registrar el usuario.');
         }
-      },
-      validarUsername() {
-        this.usernameValido = this.username.length >= 5;
-      },
-      validarEmail() {
-        this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
-      },
-      validarContrasenas() {
-        this.contrasenasIguales = this.password === this.repeatPassword;
-        this.contrasenaLarga = this.password.length > 7;
-      },
-      resetearFormulario() {
-        this.username = '';
-        this.usernameValido = true;
-        this.email = '';
-        this.emailValido = true;
-        this.password = '';
-        this.repeatPassword = '';
-        this.contrasenasIguales = true;
-        this.contrasenaLarga = true;
-        this.enviadoConExito = false;
+
+        const data = await response.json();
+        if (data && data.error) {
+          throw new Error(data.error);
+        }
+
+        this.registroExitoso = true;
+        this.resetearFormulario();
+        setTimeout(() => {
+          this.$router.push('/login');
+        }, 2000);
+      } catch (error) {
+        this.errorMessage = error.message;
       }
+    },
+    resetearFormulario() {
+      this.name = '';
+      this.nombreValido = true;
+      this.email = '';
+      this.emailValido = true;
+      this.password = '';
+      this.repeatPassword = '';
+      this.contrasenasIguales = true;
+      this.contrasenaLarga = true;
+      this.registroExitoso = false;
+      this.errorMessage = '';
     }
   }
-  </script>
-  
-  
-  
-  
+}
+</script>
+
   <style scoped>
   .signup-container {
     display: flex;

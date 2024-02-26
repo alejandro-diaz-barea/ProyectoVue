@@ -29,7 +29,6 @@ export default {
         const response = await fetch('http://localhost/api/v1/news');
         const data = await response.json();
         this.newsList = data;
-        console.log(data)
       } catch (error) {
         console.error('Error fetching news:', error);
       }

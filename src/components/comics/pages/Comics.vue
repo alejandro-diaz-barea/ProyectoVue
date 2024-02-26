@@ -21,7 +21,7 @@
           <select class="cart-container__select" v-model="card.quantity">
             <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
           </select>
-          <img src="../../../assets/carro-de-la-compra.png" @click="addToCart(card)" class="cart-icon" alt="Carrito de compras" />        
+          <button><img src="../../../assets/carro-de-la-compra.png" @click="addToCart(card)" class="cart-icon" alt="Carrito de compras" /></button>
         </div>
       </figure>
     </article>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { UserContext } from "../store/UserContext";
 import SearcherComponent from '../components/SearcherComponent.vue'; 
 import DropdownComponent from '../components/DropdownComponent.vue';
 import PaginationComponent from '../components/PaginationComponent.vue'; 
@@ -51,17 +52,20 @@ export default {
   },
 
   computed: {
+    userData() {
+      return UserContext().userData;
+    },
     displayedCards() {
-      const cardsToDisplay = this.searchResults.length > 0 ? this.searchResults : this.cards; // Si hay resultados de busqueda los muestra y si no hay muestra todos (funcion que voy a cambiar)
-      const sortedCards = this.selectedOrder // Si hay un orden seleccionado
-        ? cardsToDisplay.slice().sort((a, b) => (this.selectedOrder === 'price') ? a.price - b.price : a.title.localeCompare(b.title)) // Ordenar por el selector
-        : cardsToDisplay; // si no  hay selector muestra sin orden
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage; // inicio de las tarjetas en la pagina actual
+      const cardsToDisplay = this.searchResults.length > 0 ? this.searchResults : this.cards;
+      const sortedCards = this.selectedOrder
+        ? cardsToDisplay.slice().sort((a, b) => (this.selectedOrder === 'price') ? a.price - b.price : a.title.localeCompare(b.title))
+        : cardsToDisplay;
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       return sortedCards.slice(startIndex, startIndex + this.itemsPerPage); 
     },
 
     totalPages() {
-      return Math.ceil((this.searchResults.length > 0 ? this.searchResults : this.cards).length / this.itemsPerPage); // Calcula el número total de páginas basado en los resultados de búsqueda o todas las tarjetas
+      return Math.ceil((this.searchResults.length > 0 ? this.searchResults : this.cards).length / this.itemsPerPage);
     }
   },
 
@@ -75,8 +79,37 @@ export default {
     },
 
     rate(card, rating) {
-      // calificación de un cómic (cambiar por backend)
+      if (typeof card === 'object' && card !== null) {
+        this.updateRatingLocally(card, rating);
+        this.sendRatingToBackend(card.id, rating);
+      } else {
+        console.error('Error: card no es un objeto válido');
+      }
+    },
+
+    updateRatingLocally(card, rating) {
       card.rating = rating;
+    },
+
+    sendRatingToBackend(comicId, rating) {
+      const url = `http://localhost/api/v1/ratings`;
+      const body = { rating, comic_id: comicId };
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Calificación enviada exitosamente');
+        } else {
+          console.error('Error al enviar la calificación al backend');
+        }
+      })
+      .catch(error => console.error('Error en la solicitud:', error));
     },
 
     fetchComics() {
@@ -84,10 +117,99 @@ export default {
       fetch(comicsUrl)
         .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
         .then(data => {
-
           this.cards = data.comics.map(comic => ({ id: comic.id, title: comic.title, price: comic.price, rating: 0, quantity: 1, imageUrl: comic.image_url }));
         })
         .catch(error => console.error('Error fetching comics:', error));
+    },
+
+    addToCart(card) {
+      this.addComicToCart(card.id, card.quantity);
+    },
+
+    async addComicToCart(comicId, quantity) {
+      try {
+        const carritoId = await this.getOrCreateCart();
+
+        const formData = {
+          cantidad: quantity,
+        };
+
+        const url = `http://localhost/api/v1/carritos/${carritoId}/comics/${comicId}`;
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${UserContext().userData.token}`
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Hubo un problema al agregar el cómic al carrito.');
+        }
+
+        console.log('Cómic agregado al carrito exitosamente');
+
+      } catch (error) {
+        console.error('Error al agregar el cómic al carrito:', error.message);
+      }
+    },
+
+    async getOrCreateCart() {
+      try {
+        const carritosUrl = `http://localhost/api/v1/carritos?user_id=${UserContext().userData.id}&completed=false`;
+        const response = await fetch(carritosUrl, {
+          headers: {
+            'Authorization': `Bearer ${UserContext().userData.token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Hubo un problema al obtener los carritos del usuario.');
+        }
+
+        const data = await response.json();
+
+        if (data.length > 0) {
+          return data[0].id;
+        } else {
+          return await this.createCart();
+        }
+
+      } catch (error) {
+        console.error('Error al obtener o crear el carrito:', error.message);
+        throw error;
+      }
+    },
+
+    async createCart() {
+    
+        const formData = {
+          user_id: UserContext().userData.id,
+          comics: [],
+          completed: false
+        };
+
+        const response = await fetch('http://localhost/api/v1/carritos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${UserContext().userData.token}`
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Hubo un problema al crear el carrito.');
+        }
+
+        const data = await response.json();
+        console.log('Carrito creado exitosamente:', data);
+
+        return data.id;
+
+     
     },
 
     nextPage() {
@@ -99,25 +221,22 @@ export default {
     },
 
     performSearch(query) {
-      // Realiza una búsqueda de cómics basada en una consulta
       this.searchQuery = query;
       this.searchResults = (this.searchQuery === '') ? [] : this.cards.filter(card => card.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
-      this.currentPage = 1; // página actual después de realizar la búsqueda
+      this.currentPage = 1;
     },
 
     applyFilter(order) {
-      // aplica el filtro de orden de las tarjetas de cómics
       this.selectedOrder = order;
     }
   },
 
   created() {
-    // Método que se ejecuta cuando se crea el componente
     this.fetchComics(); 
   }
 };
-
 </script>
+
 
   <style scoped>
   .content-wrapper{

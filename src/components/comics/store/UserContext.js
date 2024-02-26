@@ -2,14 +2,18 @@ import { defineStore } from 'pinia';
 
 export const UserContext = defineStore('userState', {
   state: () => ({
-    user: false,
+    user: null,
+    userData: null, 
+    userIdCarrito:null
   }),
   actions: {
-    logIn() {
+    logIn(userData) {
       this.user = true;
+      this.userData = userData; 
     },
     logOut() {
-      this.user = false;
+      this.user = null;
+      this.userData = null; 
     },
   },
 });

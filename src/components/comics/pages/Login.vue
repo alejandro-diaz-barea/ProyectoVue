@@ -7,60 +7,91 @@
         <input type="password" class="campo-input campo-password" placeholder="Password" v-model="password" @blur="validarPassword">
         <p v-if="!passwordValido" class="mensaje-error">Por favor ingrese una contraseña.</p>
         <button class="boton-login" @click="enviarFormulario">LOGIN</button>
+        <p class="mensaje-error" v-if="error">Usuario o contraseña incorrectos</p>
         <p class="dontAcount">Don't have an account yet? <router-link to="/signUp">Sign up</router-link></p>
       </article>
       <div class="login-image">
         <img src="../../../assets/fotoLogin.jpg" class="foto-login">
       </div>
     </section>
-</template>
-
-<script>
-import { UserContext } from "../store/UserContext";
-
-export default {
+  </template>
+  
+  <script>
+  import { UserContext } from "../store/UserContext";
+  
+  export default {
     data() {
-        return {
-            email: "",
-            emailValido: true,
-            password: "",
-            passwordValido: true,
-            enviadoConExito: false,
-        }
+      return {
+        email: "",
+        emailValido: true,
+        password: "",
+        passwordValido: true,
+        error: false,
+      };
     },
     methods: {
-        enviarFormulario() {
-            if (this.emailValido && this.passwordValido && this.email && this.password) {
-                console.log('enviando...')
-                // Simula un envío exitoso después de 1 segundo
-                setTimeout(() => {
-                    this.enviadoConExito = true;
-                    // Accede al store de Pinia y llama a la acción logIn para establecer user como true
-                
-                    UserContext().logIn();
-                    this.$router.push('/');
-                    this.resetearFormulario();
-                }, 1000)
-            }
-        },
-        validarEmail() {
-            this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
-        },
-        validarPassword() {
-            this.passwordValido = this.password.trim() !== '';
-        },
-        resetearFormulario() {
-            this.email = '';
-            this.emailValido = true;
-            this.password = '';
-            this.passwordValido = true;
-            this.enviadoConExito = false;
-        }
-    }
-}
-</script>
-
+      async enviarFormulario() {
+        this.validarEmail();
+        this.validarPassword();
   
+        if (this.emailValido && this.passwordValido) {
+          try {
+            const formData = {
+              email: this.email,
+              password: this.password,
+            };
+  
+            const response = await fetch('http://localhost/api/v1/auth/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+            });
+  
+            if (!response.ok) {
+              throw new Error('Hubo un problema al iniciar sesión.');
+            }
+  
+            const data = await response.json();
+            if (data && data.error) {
+                throw new Error(data.error);
+            }
+
+            console.log(data)
+
+            // Pasar el contexto del usuario al login
+            UserContext().logIn({
+                id: data.user_id,
+                name: data.name,
+                email: this.email,
+                token: data.access_token
+            });
+            
+            this.$router.push('/');
+            this.resetearFormulario();
+          } catch (error) {
+            console.error('Error al iniciar sesión:', error.message);
+            this.error = true; // Mostrar mensaje de error
+          }
+        }
+      },
+      validarEmail() {
+        this.emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+      },
+      validarPassword() {
+        this.passwordValido = this.password.trim() !== '';
+      },
+      resetearFormulario() {
+        this.email = '';
+        this.emailValido = true;
+        this.password = '';
+        this.passwordValido = true;
+        this.error = false; // Reiniciar mensaje de error
+      },
+    },
+  };
+  </script>
   
   
 

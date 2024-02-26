@@ -38,8 +38,8 @@ const routes = [
         component: () => import("../comics/layout/LayoutPrivate.vue"),
         children: [
             {
-              path: 'details-comics/:id', // Ruta con parámetro ':id'
-              name: 'details-comics', // Nombre de la ruta
+              path: 'details-comics/:id', 
+              name: 'details-comics', 
               beforeEnter: (to, from, next) => {
                   const loggedIn = checkAuthentication()
                   if (!loggedIn) {

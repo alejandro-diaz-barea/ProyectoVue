@@ -16,14 +16,14 @@
         </li>
       </ul>
     </nav>
-    <nav class="header__buttons" >
+    <nav class="header__buttons">
       <!-- Icono de Dark Mode -->
       <a class="buttons_DarkMode">
         <img class="ImagenDarkMode" src="../../../assets/modo-de-sueno.png" alt="darkmode">
       </a>
       <button v-if="!user" @click="goToLoginPage" class="buttons__login">LOGIN</button>
       <button v-if="!user" @click="goToSignUpPage" class="buttons__signup">SIGN UP</button>
-      <button v-else @click="logOut" class="buttons__logout">LOGOUT</button>
+      <button v-if="user" @click="goToProfilePage" class="buttons__user">{{userData}}</button>
     </nav>
 
     <!-- Icono de hamburguesa para mostrar el menú desplegable -->
@@ -40,8 +40,7 @@
       <router-link to="/contact" class="nav__link" @click="toggleMenu">CONTACT</router-link>
       <button @click="goToLoginPage" class="buttons__login" v-if="!user">LOGIN</button>
       <button @click="goToSignUpPage" class="buttons__signup" v-if="!user">SIGN UP</button>
-      <button @click="logOut" class="buttons__logout" v-else>LOGOUT</button>
-      <!-- Icono de Dark Mode -->
+      <button v-if="user" @click="goToProfilePage" class="buttons__user">{{userData}}</button>
       <a class="buttons_DarkMode">
         <img class="ImagenDarkMode" src="../../../assets/modo-de-sueno.png" alt="darkmode">
       </a>
@@ -60,10 +59,15 @@ export default {
   },
   computed: {
     user() {
-      return UserContext().user; 
+      return UserContext().user !== null; // Verificar si el usuario está autenticado
+    },userData(){
+      return UserContext().userData.name
     }
   },
   methods: {
+    goToProfilePage(){
+      this.$router.push('/perfil');
+    },
     goToLoginPage() {
       this.$router.push('/login');
       // Cerrar el menú
@@ -78,13 +82,11 @@ export default {
       // Alternar la visibilidad del menú desplegable
       this.showMenu = !this.showMenu;
     },
-    logOut() {
-      this.$router.push('/')
-      UserContext().logOut(); // Llamar a la acción logOut para cerrar sesión
-    }
   }
 }
 </script>
+
+
 
 <style scoped>
 .header {
