@@ -16,7 +16,6 @@
           :card="card"
           @rate="rate"
           @addToCart="addToCart"
-          @removeFromCart="removeFromCart"
           @updateQuantity="updateQuantity"
         />
       </article>
@@ -26,19 +25,16 @@
   <script>
   import { getOrCreateCart } from "../helpers/cartService";
   import { UserContext } from "../store/UserContext";
-  import SearcherComponent from '../components/SearcherComponent.vue'; 
   import DropdownComponent from '../components/DropdownComponent.vue';
-  import PaginationComponent from '../components/PaginationComponent.vue';
   import CardComponent from '../components/CardComponent.vue'; 
   
   export default {
-    components: { SearcherComponent, DropdownComponent, PaginationComponent, CardComponent }, 
+    components: { DropdownComponent, CardComponent }, 
   
     data() {
       return {
         cards: [], 
         selectedOrder: '', 
-        searchResults: [],
         dailyOffers: [] 
       };
     },

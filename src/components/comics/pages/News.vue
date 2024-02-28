@@ -39,6 +39,8 @@ export default {
 
 <style scoped>
 .news-container {
+  margin-left: 7rem;
+  margin-right: 7rem;
   text-align: center;
   min-height: 100vh;
   display: flex;
@@ -55,7 +57,7 @@ export default {
 }
 
 .news-item {
-  width: calc(33.33% - 20px); 
+  width: calc(27% - 20px); 
   margin: 10px;
   border: 1px solid #000000;
   border-radius: 1rem;

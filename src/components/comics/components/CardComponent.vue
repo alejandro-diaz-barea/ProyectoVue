@@ -96,6 +96,7 @@
     transition: transform 0.3s ease; 
     overflow: hidden;
     margin-bottom: 50px;
+    
   }
   
   .card__title{

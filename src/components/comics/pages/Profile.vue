@@ -1,8 +1,9 @@
 <template>
   <div>
     <h1>Perfil</h1>
-    <h1>Username: {{ user.name }}</h1>
-    <h1>Email: {{ user.email }}</h1>
+    <h1>{{ user.name }}</h1>
+    <h1>{{ user.email }}</h1>
+    <h1>**************</h1>
 
     <button @click="logOut" class="buttons__logout">LOGOUT</button>
 
