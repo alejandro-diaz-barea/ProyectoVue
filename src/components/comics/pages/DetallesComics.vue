@@ -10,11 +10,28 @@
       <p v-if="totalRatings > 0">Valoraciones totales: {{ totalRatings }}</p>
       <p v-if="averageRating > 0">Valoración media: {{ averageRating }}</p>
       <p v-else>No hay valoraciones para este cómic</p>
+
+      <!-- Sección de Comentarios -->
+      <div>
+        <h2>Comentarios</h2>
+        <ul>
+          <li v-for="comment in comments" :key="comment.id" :class="{ 'comment-right': isUserComment(comment.user_id) }">
+            <p>{{ comment.comment }}</p>
+            <p v-if="comment.user">Usuario: {{ comment.user.name }}</p>
+          </li>
+        </ul>
+        <form @submit.prevent="addComment">
+          <textarea v-model="newComment" placeholder="Escribe tu comentario"></textarea>
+          <button type="submit">Agregar Comentario</button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { UserContext } from "../store/UserContext";
+
 export default {
   data() {
     return {
@@ -25,13 +42,16 @@ export default {
       comicImg: '',
       loading: true,
       totalRatings: 0,
-      averageRating: 0  
+      averageRating: 0,
+      comments: [],
+      newComment: ''
     };
   },
   mounted() {
     const comicId = this.$route.params.id;
     console.log('Comic ID:', comicId);
     this.fetchComicDetails(comicId);
+    this.fetchComicComments(comicId);
   },
   methods: {
     fetchComicDetails(comicId) {
@@ -85,6 +105,59 @@ export default {
         .catch(error => {
           console.error('Error fetching comic ratings:', error);
         });
+    },
+    fetchComicComments(comicId) {
+      fetch(`http://localhost/api/v1/comics/${comicId}/comments`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Hubo un problema al obtener los comentarios del cómic');
+          }
+          return response.json();
+        })
+        .then(data => {
+          this.comments = data.comments;
+        })
+        .catch(error => {
+          console.error('Error fetching comic comments:', error);
+        });
+    },
+    addComment() {
+      const comicId = this.comicId;
+      const formData = {
+        comment: this.newComment,
+        comic_id: comicId,
+        user_id: UserContext().userData.id, // Agregar el user_id del contexto del usuario
+        user_name: UserContext().userData.name // Agregar el nombre del contexto del usuario
+      };
+
+      fetch('http://localhost/api/v1/comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${UserContext().userData.token}`
+        },
+        body: JSON.stringify(formData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Hubo un problema al agregar el comentario');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Comentario creado exitosamente:', data.comment);
+        this.comments.push(data.comment);
+        this.newComment = '';
+      })
+      .catch(error => {
+        console.error('Error adding comment:', error);
+      });
+    },
+    formatDate(dateString) {
+      // Función para formatear la fecha...
+    },
+    isUserComment(userId) {
+      return userId === UserContext().userData.id;
     }
   }
 };
@@ -99,5 +172,36 @@ img {
 div {
   margin-left: 4rem;
   margin-right: 4rem;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 1rem;
+}
+
+.comment-right {
+  text-align: right;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 1rem;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
 </style>

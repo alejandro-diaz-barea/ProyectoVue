@@ -18,6 +18,8 @@
   
   <script>
   import { UserContext } from "../store/UserContext";
+  import { getOrCreateCart } from "../helpers/cartService";
+
   
   export default {
     data() {
@@ -68,6 +70,7 @@
                 token: data.access_token
             });
             
+            getOrCreateCart()
             this.$router.push('/');
             this.resetearFormulario();
           } catch (error) {

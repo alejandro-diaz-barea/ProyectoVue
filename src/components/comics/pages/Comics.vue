@@ -10,20 +10,15 @@
       </header>
     </article>
     <article class="cards-container">
-      <figure v-for="card in displayedCards" :key="card.id" class="card" >
-        <img :src="card.imageUrl" class="img" @click="gotoDetails(card)"/>
-        <h2 class="card__title">{{ card.title }}</h2>
-        <p class="card__price">{{ card.price }} €</p>
-        <div class="rating">
-          <span v-for="n in 5" :key="n" class="star" @click="rate(card, n)" :class="{ 'filled': n <= card.rating }">&#9733;</span>
-        </div>
-        <div class="cart-container">
-          <select class="cart-container__select" v-model="card.quantity">
-            <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-          </select>
-          <button><img src="../../../assets/carro-de-la-compra.png" @click="addToCart(card)" class="cart-icon" alt="Carrito de compras" /></button>
-        </div>
-      </figure>
+      <CardComponent
+        v-for="card in displayedCards"
+        :key="card.id"
+        :card="card"
+        @rate="rate"
+        @addToCart="addToCart"
+        @removeFromCart="removeFromCart"
+        @updateQuantity="updateQuantity"
+      />
     </article>
     <footer class="pagination">
       <PaginationComponent :currentPage="currentPage" :totalPages="totalPages" @next-page="nextPage" @previous-page="previousPage" />
@@ -32,13 +27,15 @@
 </template>
 
 <script>
+import { getOrCreateCart } from "../helpers/cartService";
 import { UserContext } from "../store/UserContext";
 import SearcherComponent from '../components/SearcherComponent.vue'; 
 import DropdownComponent from '../components/DropdownComponent.vue';
-import PaginationComponent from '../components/PaginationComponent.vue'; 
+import PaginationComponent from '../components/PaginationComponent.vue';
+import CardComponent from '../components/CardComponent.vue'; 
 
 export default {
-  components: { SearcherComponent, DropdownComponent, PaginationComponent }, 
+  components: { SearcherComponent, DropdownComponent, PaginationComponent, CardComponent }, 
 
   data() {
     return {
@@ -73,11 +70,6 @@ export default {
     gotoCarrito() {
       this.$router.push('/perfil/carrito');
     },
-
-    gotoDetails(card) {
-      this.$router.push({ name: 'details-comics', params: { id: card.id } });
-    },
-
     rate(card, rating) {
       if (typeof card === 'object' && card !== null) {
         this.updateRatingLocally(card, rating);
@@ -117,24 +109,21 @@ export default {
       fetch(comicsUrl)
         .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
         .then(data => {
-          this.cards = data.comics.map(comic => ({ id: comic.id, title: comic.title, price: comic.price, rating: 0, quantity: 1, imageUrl: comic.image_url }));
+          this.cards = data.comics.map(comic => ({ id: comic.id, title: comic.title, price: comic.price, rating: 0, quantity: 1, image_url: comic.image_url }));
         })
         .catch(error => console.error('Error fetching comics:', error));
     },
 
-    addToCart(card) {
-      this.addComicToCart(card.id, card.quantity);
-    },
-
-    async addComicToCart(comicId, quantity) {
+    async addToCart(card, selectedQuantity) {
       try {
-        const carritoId = await this.getOrCreateCart();
+        // Obtener o crear el carrito y actualizar el carrito_id en el UserContext
+        const carritoId = await getOrCreateCart();
 
         const formData = {
-          cantidad: quantity,
+          cantidad: selectedQuantity,
         };
 
-        const url = `http://localhost/api/v1/carritos/${carritoId}/comics/${comicId}`;
+        const url = `http://localhost/api/v1/carritos/${carritoId}/comics/${card.id}`;
 
         const response = await fetch(url, {
           method: 'POST',
@@ -151,65 +140,21 @@ export default {
 
         console.log('Cómic agregado al carrito exitosamente');
 
+        // Actualizar la cantidad en el cómic localmente
+        const updatedCard = { ...card, quantity: selectedQuantity };
+        // Aquí podrías emitir un evento para actualizar la lista de cómics en caso necesario
       } catch (error) {
         console.error('Error al agregar el cómic al carrito:', error.message);
       }
     },
 
-    async getOrCreateCart() {
-      try {
-        const carritosUrl = `http://localhost/api/v1/carritos?user_id=${UserContext().userData.id}&completed=false`;
-        const response = await fetch(carritosUrl, {
-          headers: {
-            'Authorization': `Bearer ${UserContext().userData.token}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Hubo un problema al obtener los carritos del usuario.');
-        }
-
-        const data = await response.json();
-
-        if (data.length > 0) {
-          return data[0].id;
-        } else {
-          return await this.createCart();
-        }
-
-      } catch (error) {
-        console.error('Error al obtener o crear el carrito:', error.message);
-        throw error;
-      }
+    removeFromCart(card) {
+      // Implementa la lógica para eliminar el cómic del carrito
     },
 
-    async createCart() {
-    
-        const formData = {
-          user_id: UserContext().userData.id,
-          comics: [],
-          completed: false
-        };
-
-        const response = await fetch('http://localhost/api/v1/carritos', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${UserContext().userData.token}`
-          },
-          body: JSON.stringify(formData),
-        });
-
-        if (!response.ok) {
-          throw new Error('Hubo un problema al crear el carrito.');
-        }
-
-        const data = await response.json();
-        console.log('Carrito creado exitosamente:', data);
-
-        return data.id;
-
-     
+    updateQuantity(selectedQuantity) {
+      // Método para emitir el evento con la nueva cantidad seleccionada
+      this.$emit('updateQuantity', selectedQuantity);
     },
 
     nextPage() {
@@ -238,123 +183,57 @@ export default {
 </script>
 
 
-  <style scoped>
-  .content-wrapper{
-    font-family: 'Roboto', sans-serif;
-  }
-  .header{
-    margin-top: 50px ;
-    display: flex;
-    justify-content: center;
-    height: 40px;
-  }
-  .header__content {
-    width: 60%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .header_content_carrito {
-    height: 100%; 
-    width: 50px;
-    
-  }
 
-  .header_content_carrito_imagen {
-    height: 100%; 
-    width: auto;
-  }
+<style scoped>
+.content-wrapper{
+  font-family: 'Roboto', sans-serif;
+}
+.header{
+  margin-top: 50px ;
+  display: flex;
+  justify-content: center;
+  height: 40px;
+}
+.header__content {
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header_content_carrito {
+  height: 100%; 
+  width: 50px;
   
-  .cards-container {
-    margin-left: 80px;
-    margin-right: 80px;
-    text-align: center;
-    min-height: 100vh;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 50px; 
-    margin-bottom: 20px;
-  }
-  
-  .card {
-    width: calc(20% - 20px); /* Hace que haya 5 cards por fila */
-    margin: 10px;
-    border: 1px solid #000000;
-    border-radius: 1rem;
-    box-sizing: border-box;
-    transition: transform 0.3s ease; 
-    overflow: hidden;
-    margin-bottom: 50px;
-  }
-  
-  .card__title{
-    height: 80px;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-    font-size: 1rem;
-  }
-  
-  .card__price{
-    margin: 0;
-    padding: 0;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .pagination{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 50px;
-    padding: 0;
-  }
-  
-  .rating {
-    margin-top: 1rem;
-  }
-  
-  .star {
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  
-  .filled {
-    color: orange;
-  }
-  
-  .cart-container {
-    display: flex;
-    align-items: center;
-    margin-top: 1rem;
-    justify-content: center;
-    margin-bottom: 4rem;
-  }
-  
-  .cart-icon {
-    width: 30px;
-    height: auto;
-    margin-left: 10px;
-  }
-  .img{
-    width: 100%;
-    height: 60%;
-    object-fit: cover;
-  }
-  
-  .cart-container__select{
-    width: 60px; 
-    height: 30px;
-  }
-  @media screen and (max-width: 1000px) {
-    .card {
-      width: calc(50% - 20px);
-    }
-  }
-  </style>
-  
+}
+
+.header_content_carrito_imagen {
+  height: 100%; 
+  width: auto;
+}
+
+.cards-container {
+  margin-left: 80px;
+  margin-right: 80px;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 50px; 
+  margin-bottom: 20px;
+}
+
+.pagination{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+  padding: 0;
+}
+
+
+.filled {
+  color: orange;
+}
+
+</style>
