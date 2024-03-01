@@ -55,14 +55,23 @@ export default {
     userData() {
       return UserContext().userData;
     },
-    displayedCards() {
-      const cardsToDisplay = this.searchResults.length > 0 ? this.searchResults : this.cards;
-      const sortedCards = this.selectedOrder
-        ? cardsToDisplay.slice().sort((a, b) => (this.selectedOrder === 'price') ? a.price - b.price : a.title.localeCompare(b.title))
-        : cardsToDisplay;
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      return sortedCards.slice(startIndex, startIndex + this.itemsPerPage); 
-    },
+    
+  displayedCards() {
+    // Determinar qué conjunto de tarjetas se mostrará: resultados de búsqueda o todas las tarjetas
+    const cardsToDisplay = this.searchResults.length > 0 ? this.searchResults : this.cards;
+
+    // Ordenar las tarjetas según el criterio seleccionado ('price' para precio, o el título de lo contrario)
+    const sortedCards = this.selectedOrder
+      ? cardsToDisplay.slice().sort((a, b) => (this.selectedOrder === 'price') ? a.price - b.price : a.title.localeCompare(b.title))
+      : cardsToDisplay;
+
+    // Calcular el índice de inicio de la página actual
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+
+    // Devolver las tarjetas de la página actual, según el índice de inicio y el número de tarjetas por página
+    return sortedCards.slice(startIndex, startIndex + this.itemsPerPage); 
+  },
+
 
     totalPages() {
       return Math.ceil((this.searchResults.length > 0 ? this.searchResults : this.cards).length / this.itemsPerPage);
@@ -119,8 +128,36 @@ export default {
 
     async addToCart(card, selectedQuantity) {
       try {
+        const userContext = UserContext();
+        if (!userContext || !userContext.userData) {
+          this.$router.push("/login");
+          return;
+        }   
+
+        // Obtener o crear el carrito y actualizar el carrito_id en el UserContext
+        const carritoId = await getOrCreateCart();
+
+        const formData = {
+        cantidad: selectedQuantity,
+        };
+
+        const url = `http://localhost/api/v1/carritos/${carritoId}/comics/${card.id}`;
+
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userContext.userData.token}`
+        },
+        body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Hubo un problema al agregar el cómic al carrito.');
+        }   
+
         // Mostrar el mensaje en el modal
-        this.modalMessage = `¡"${card.title}" ha sido agregado al carrito!`;
+         this.modalMessage = `¡"${card.title}" ha sido agregado al carrito!`;
         this.$refs.messageModal.openModal(this.modalMessage);
 
         // Ocultar el modal después de 3 segundos
@@ -128,34 +165,20 @@ export default {
           this.$refs.messageModal.closeModal();
         }, 3000);
 
-        // Obtener o crear el carrito y actualizar el carrito_id en el UserContext
-        const carritoId = await getOrCreateCart();
+  } catch (error) {
+    console.error('Error al agregar el cómic al carrito:', error.message);
+     // Mostrar el mensaje en el modal
+     this.modalMessage = `¡"${card.title}" lo tienes en el carrito!`;
+    this.$refs.messageModal.openModal(this.modalMessage);
 
-        const formData = {
-          cantidad: selectedQuantity,
-        };
+    // Ocultar el modal después de 3 segundos
+    setTimeout(() => {
+      this.$refs.messageModal.closeModal();
+    }, 3000);
+  }
+},
 
-        const url = `http://localhost/api/v1/carritos/${carritoId}/comics/${card.id}`;
 
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${UserContext().userData.token}`
-          },
-          body: JSON.stringify(formData),
-        });
-
-        if (!response.ok) {
-          throw new Error('Hubo un problema al agregar el cómic al carrito.');
-        }
-
-        console.log('Cómic agregado al carrito exitosamente');
-
-      } catch (error) {
-        console.error('Error al agregar el cómic al carrito:', error.message);
-      }
-    },
 
     updateQuantity(selectedQuantity) {
       // Método para emitir el evento con la nueva cantidad seleccionada

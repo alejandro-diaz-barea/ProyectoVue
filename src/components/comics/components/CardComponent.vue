@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { UserContext } from '../store/UserContext';
+
 export default {
   props: {
     card: {
@@ -37,9 +39,10 @@ export default {
   },
   data() {
     return {
-      selectedQuantity: this.card.quantity // Inicializando la cantidad seleccionada con la cantidad del cómic
+      selectedQuantity: this.card.quantity 
     };
   },
+
   methods: {
     gotoDetails(card) {
       this.$router.push({ name: 'details-comics', params: { id: card.id } });
@@ -48,8 +51,11 @@ export default {
       this.$emit('rate', card, rating);
     },
     addToCart(card) {
-      this.$emit('addToCart', card, this.selectedQuantity);
-    },
+    
+        this.$emit('addToCart', card, this.selectedQuantity);
+
+      }
+    ,
     updateQuantity() {
       // Método para emitir el evento con la nueva cantidad seleccionada
       this.$emit('updateQuantity', this.selectedQuantity);

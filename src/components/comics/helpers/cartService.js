@@ -44,7 +44,6 @@ async function createCart() {
     }
 
     const data = await response.json();
-    console.log('Carrito creado exitosamente:', data);
 
     // Crear una promesa que resuelva cuando se actualice el contexto del usuario
     const updateUserContext = new Promise((resolve) => {

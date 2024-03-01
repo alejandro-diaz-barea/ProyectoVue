@@ -56,7 +56,6 @@ export default {
         quantity: comic.pivot.cantidad,
         completed: comic.pivot.completed
       }));
-      console.log(data);
 
     } catch (error) {
       console.error('Error al obtener los cómics del carrito:', error.message);
@@ -82,7 +81,6 @@ export default {
         }
 
         this.comics = this.comics.filter(comic => comic.id !== comicId);
-        console.log('Cómic eliminado del carrito exitosamente');
 
       } catch (error) {
         console.error('Error al eliminar el cómic del carrito:', error.message);
@@ -94,14 +92,22 @@ export default {
       console.log('Nueva cantidad seleccionada:', selectedQuantity);
     },
 
-    buyComic(comic) {
-      console.log(comic)
-      useComicStore().setSelectedComic(comic); // Guardar el cómic seleccionado en la tienda
-      this.$router.push("/perfil/carrito/compra");
+    async buyComic(comic) {
+      try {
+        await this.removeFromCart(comic); // Eliminar el cómic del carrito
+        
+        // Lógica para comprar el cómic después de eliminarlo del carrito
+        useComicStore().setSelectedComic(comic); // Guardar el cómic seleccionado en la tienda
+        this.$router.push("/perfil/carrito/compra");
+
+      } catch (error) {
+        console.error('Error al comprar el cómic:', error.message);
+      }
     }
   }
 };
 </script>
+
 
 
 <style scoped>

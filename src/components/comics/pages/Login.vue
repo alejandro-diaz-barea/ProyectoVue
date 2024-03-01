@@ -60,7 +60,6 @@
                 throw new Error(data.error);
             }
 
-            console.log(data)
 
             // Pasar el contexto del usuario al login
             UserContext().logIn({

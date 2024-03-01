@@ -14,10 +14,10 @@
 .footer{
   background-color: #CACACA;
   color: #000000;
-  padding: 0.75rem 2.1875rem; /* Se puede agrupar el padding */
+  padding: 0.75rem 2.1875rem; 
   height: 11.328vh;
   display: flex;
-  justify-content: center; /* Centrar el contenido horizontalmente */
+  justify-content: center; 
   align-items: center;
   font-family: 'Roboto', sans-serif;
   bottom: 0;

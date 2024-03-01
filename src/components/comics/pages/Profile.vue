@@ -47,6 +47,8 @@ export default {
     }
   },
 
+  //Fetch para obetener el hisotrial de compra del usuario y recorrerlos en el template 
+
   async created() {
     this.loading = true;
     try {
@@ -67,16 +69,14 @@ export default {
       this.purchases = data.purchaseHistories;
       this.loading = false;
 
-      console.log('Historial de compras:', this.purchases);
-
     } catch (error) {
-      console.error('Error al obtener el historial de compras:', error.message);
       this.error = 'Error al obtener el historial de compras.';
       this.loading = false;
     }
   },
 
   methods: {
+    // Logout del userContext
     logOut() {
       UserContext().logOut();
       this.$router.push('/');
@@ -91,7 +91,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  height: 70vh;
+  min-height: 70vh;
 
 }
 
@@ -121,6 +121,7 @@ export default {
   font-size: 1.5rem;
   margin-bottom: 5px;
   margin-top: 20px;
+  text-align: center;
 }
 
 .profile__user__email,
