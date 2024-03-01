@@ -8,11 +8,9 @@
         <figcaption class="comic-details__figcaption">
           <!-- Mostrar título, descripción, precio, valoraciones, y valoración media del cómic -->
           <p class="comic-details__info-title">{{ comicTitle }}</p>
-          <p class="comic-details__info-item"><strong>Descripción:</strong> {{ comicDescription }}</p>
-          <p class="comic-details__info-item"><strong>Precio:</strong> {{ comicPrice }} €</p>
-          <p v-if="totalRatings > 0" class="comic-details__info-item"><strong>Valoraciones totales:</strong> {{ totalRatings }}</p>
-          <p v-if="averageRating > 0" class="comic-details__info-item"><strong>Valoración media:</strong> {{ averageRating }}</p>
-          <p v-else class="comic-details__info-item">No hay valoraciones para este cómic</p>
+          <p class="comic-details__info-item"><strong>Description:</strong> {{ comicDescription }}</p>
+          <p class="comic-details__info-item"><strong>Price:</strong> {{ comicPrice }} €</p>
+          <p v-if="averageRating > 0" class="comic-details__info-item"><strong>Rating:</strong> {{ averageRating }} stars</p>
         </figcaption>
       </figure>
     </div>
@@ -25,7 +23,7 @@
         <!-- Mostrar cada comentario y el nombre del usuario (si está disponible) -->
         <li v-for="comment in comments" :key="comment.id" :class="{ 'comic-details__comment-right': isUserComment(comment.user_id) }">
           <p>{{ comment.comment }}</p>
-          <p v-if="comment.user" class="comic-details__comment-user">Usuario: {{ comment.user.name }}</p>
+          <p v-if="comment.user" class="comic-details__comment-user">User: {{ comment.user.name }}</p>
         </li>
       </ul>
       <!-- Formulario para agregar un nuevo comentario -->

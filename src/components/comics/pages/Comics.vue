@@ -157,7 +157,7 @@ export default {
         }   
 
         // Mostrar el mensaje en el modal
-         this.modalMessage = `¡"${card.title}" ha sido agregado al carrito!`;
+         this.modalMessage = `¡"${card.title}"It has been added to the cart!`;
         this.$refs.messageModal.openModal(this.modalMessage);
 
         // Ocultar el modal después de 3 segundos
@@ -168,7 +168,7 @@ export default {
   } catch (error) {
     console.error('Error al agregar el cómic al carrito:', error.message);
      // Mostrar el mensaje en el modal
-     this.modalMessage = `¡"${card.title}" lo tienes en el carrito!`;
+     this.modalMessage = `¡"${card.title}"You have it in the cart!`;
     this.$refs.messageModal.openModal(this.modalMessage);
 
     // Ocultar el modal después de 3 segundos
