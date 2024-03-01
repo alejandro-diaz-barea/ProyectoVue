@@ -92,10 +92,10 @@ Imagen perfil: En esta pantalla, los usuarios pueden ver su correo electrónico,
 
 ## 7. Despliegue
 
-Para el despligue he elegido netlify ya que es un lugar cómodo para subir tu web
+Para el despliegue he elegido netlify ya que es un lugar cómodo para subir tu web
 
 ![alt text](despliegue.png)
-Imagen de despleigue : Podemos ver que es un simple drag and drop
+Imagen de despliegue : Podemos ver que es un simple drag and drop
 
 Enlace del despliegue : https://65e220edffad9200a8180192--fascinating-madeleine-f5d7b4.netlify.app/#/
 
@@ -103,6 +103,7 @@ Enlace del despliegue : https://65e220edffad9200a8180192--fascinating-madeleine-
 ## 9. Tablas de la base de datos
 
 ![alt text](BD.png)
+
 Imagen de base de datos diagrama
 
 ## 9. Conclusiones
