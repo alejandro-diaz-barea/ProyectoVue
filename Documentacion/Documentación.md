@@ -31,14 +31,14 @@ En cuanto a la guía de estilos de mi app, he optado por utilizar una paleta de 
 
 "La instalación del proyecto es sencilla. Para el frontend, clonas el repositorio, abres un terminal en su directorio y ejecutas 'npm install', luego lo despliegas con 'npm run dev'. En cuanto al backend, clonas el repositorio y ejecutas 'docker-compose up'. En caso de problemas durante el despliegue del backend, puedes usar los siguientes comandos:
 
-    - chmod -R 775 storage
-    - chmod -R 775 bootstrap/cache
+     chmod -R 775 storage
+     chmod -R 775 bootstrap/cache
 
 Eso es para los permisos de la API, en cuanto a la realizacion debes de migrar y ejecutar los seeders con los siguientes comandos:
 
-    - ./vendor/bin/sail artisan migrate
-    - ./vendor/bin/sail artisan db:seed --class=NewsSeeder
-    - ./vendor/bin/sail artisan db:seed --class=ComicsSeeder
+     ./vendor/bin/sail artisan migrate
+     ./vendor/bin/sail artisan db:seed --class=NewsSeeder
+     ./vendor/bin/sail artisan db:seed --class=ComicsSeeder
 
 ## 6. Desarrollo
 
