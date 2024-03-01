@@ -29,7 +29,7 @@ En cuanto a la guía de estilos de mi app, he optado por utilizar una paleta de 
 
 ## 5. Instalación del Proyecto
 
-"La instalación del proyecto es sencilla. Para el frontend, clonas el repositorio, abres un terminal en su directorio y ejecutas 'npm install', luego lo despliegas con 'npm run dev'. En cuanto al backend, clonas el repositorio y ejecutas 'docker-compose up'. En caso de problemas durante el despliegue del backend, puedes usar los siguientes comandos:
+La instalación del proyecto es sencilla. Para el frontend, clonas el repositorio, abres un terminal en su directorio y ejecutas 'npm install', luego lo despliegas con 'npm run dev'. En cuanto al backend, clonas el repositorio y ejecutas 'docker-compose up'. En caso de problemas durante el despliegue del backend, puedes usar los siguientes comandos:
 
      chmod -R 775 storage
      chmod -R 775 bootstrap/cache
