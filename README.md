@@ -4,7 +4,11 @@
 
 Para usar mi aplicación, los usuarios deben crear una cuenta y luego iniciar sesión para acceder a una amplia selección de cómics. Podrán añadirlos al carrito y comprarlos con una interfaz sencilla para ingresar sus datos. También podrán realizar comentarios en los cómics o simplemente verlos para obtener más feedback antes de realizar la compra.
 
-aqui enlace video
+Enlace al video explicativo https://drive.google.com/file/d/1NaYhEzMi3mTPegI2ivvNSvpgrIZIdrxb/view?usp=sharing
+
+He tenido un problema importante con el audio del video debido a un error de drivers de mi portátil y no tenía forma de ponerselo
+
+Como problemas de la aplicación darñia tres : en la validación de la compra debido a que he tenido falta de tiempo, otro problema es que el apartado de ofertas no esta bien programado también debido a el tiempo y como último que no he podido aplicarle el modo noche .
 
 ## Despliegue
 
