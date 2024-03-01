@@ -73,6 +73,17 @@ const routes = [
                   }
               },
               component: () => import('../comics/pages/Carrito.vue')
+            }, {
+              path: '/perfil/carrito/compra',
+              beforeEnter: (to, from, next) => {
+                  const loggedIn = checkAuthentication()
+                  if (!loggedIn) {
+                      next('/login')
+                  } else {
+                      next()
+                  }
+              },
+              component: () => import('../comics/pages/Compra.vue')
             },
         ]
     },

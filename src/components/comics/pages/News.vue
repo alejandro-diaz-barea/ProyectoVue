@@ -64,22 +64,23 @@ export default {
   box-sizing: border-box;
   transition: transform 0.3s ease; 
   overflow: hidden;
+  height: 500px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .news-item {
     width: calc(50% - 20px); 
   }
+  .news-container {
+  margin-left: 4rem;
+  margin-right: 4rem;
+}
 }
 
-@media (max-width: 480px) {
+@media (max-width: 550px) {
   .news-item {
     width: calc(100% - 20px); 
   }
-}
-
-.news-item:hover {
-  transform: scaleX(1.1);     
 }
 
 .news-item__photo {
@@ -88,12 +89,17 @@ export default {
   object-fit: cover;
 }
 
-.news-item__title,
-.news-item__description {
+.news-item__title{
   height: 30%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0;
+}
+.news-item__description {
+  height: 30%;
+  margin: 0;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 </style>

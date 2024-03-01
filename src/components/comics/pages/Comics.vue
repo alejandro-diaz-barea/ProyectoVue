@@ -16,9 +16,10 @@
         :card="card"
         @rate="rate"
         @addToCart="addToCart"
-        @removeFromCart="removeFromCart"
         @updateQuantity="updateQuantity"
       />
+      <!-- Componente del mensaje en el modal -->
+      <MessageVue ref="messageModal" />
     </article>
     <footer class="pagination">
       <PaginationComponent :currentPage="currentPage" :totalPages="totalPages" @next-page="nextPage" @previous-page="previousPage" />
@@ -33,9 +34,10 @@ import SearcherComponent from '../components/SearcherComponent.vue';
 import DropdownComponent from '../components/DropdownComponent.vue';
 import PaginationComponent from '../components/PaginationComponent.vue';
 import CardComponent from '../components/CardComponent.vue'; 
+import MessageVue from '../components/Mensagge.vue'
 
 export default {
-  components: { SearcherComponent, DropdownComponent, PaginationComponent, CardComponent }, 
+  components: { SearcherComponent, DropdownComponent, PaginationComponent, CardComponent, MessageVue }, 
 
   data() {
     return {
@@ -44,7 +46,8 @@ export default {
       itemsPerPage: 10, 
       selectedOrder: '', 
       searchQuery: '', 
-      searchResults: [] 
+      searchResults: [],
+      modalMessage: ""
     };
   },
 
@@ -116,6 +119,15 @@ export default {
 
     async addToCart(card, selectedQuantity) {
       try {
+        // Mostrar el mensaje en el modal
+        this.modalMessage = `¡"${card.title}" ha sido agregado al carrito!`;
+        this.$refs.messageModal.openModal(this.modalMessage);
+
+        // Ocultar el modal después de 3 segundos
+        setTimeout(() => {
+          this.$refs.messageModal.closeModal();
+        }, 3000);
+
         // Obtener o crear el carrito y actualizar el carrito_id en el UserContext
         const carritoId = await getOrCreateCart();
 
@@ -140,16 +152,9 @@ export default {
 
         console.log('Cómic agregado al carrito exitosamente');
 
-        // Actualizar la cantidad en el cómic localmente
-        const updatedCard = { ...card, quantity: selectedQuantity };
-        // Aquí podrías emitir un evento para actualizar la lista de cómics en caso necesario
       } catch (error) {
         console.error('Error al agregar el cómic al carrito:', error.message);
       }
-    },
-
-    removeFromCart(card) {
-      // Implementa la lógica para eliminar el cómic del carrito
     },
 
     updateQuantity(selectedQuantity) {
@@ -184,6 +189,7 @@ export default {
 
 
 
+
 <style scoped>
 .content-wrapper{
   font-family: 'Roboto', sans-serif;
@@ -195,7 +201,7 @@ export default {
   height: 40px;
 }
 .header__content {
-  width: 60%;
+  width: 75%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -203,7 +209,11 @@ export default {
 
 .header_content_carrito {
   height: 100%; 
-  width: 50px;
+    width: 50px;
+    background-color: transparent;
+    color: transparent;
+    border: none;
+    cursor: pointer;
   
 }
 
@@ -235,5 +245,31 @@ export default {
 .filled {
   color: orange;
 }
+@media screen and (max-width: 1000px) {
+
+  .header__content {
+  width: 85%;
+
+}
+
+} 
+
+
+@media screen and (max-width: 550px) {
+
+  .header__content {
+  width: 70%;
+
+}
+} 
+
+
+@media screen and (max-width: 400px) {
+
+.header__content {
+width:90%;
+
+}
+} 
 
 </style>

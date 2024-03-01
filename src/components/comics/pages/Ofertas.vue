@@ -2,7 +2,7 @@
     <section class="content-wrapper">
       <article class="header">
         <header class="header__content">
-          <h1>50% EN 10 PODUCTOS</h1>
+          <h1 class="header__content_title">50% IN 10 PRODUCTS</h1>
           <DropdownComponent @filter="applyFilter" />
           <button class="header_content_carrito" @click="gotoCarrito">
             <img class="header_content_carrito_imagen" src="../../../assets/carrito-de-compras.png" alt="Carrito de compras" />
@@ -187,6 +187,10 @@
   .header_content_carrito {
     height: 100%; 
     width: 50px;
+    background-color: transparent;
+    color: transparent;
+    border: none;
+    cursor: pointer;
   }
   
   .header_content_carrito_imagen {
@@ -216,5 +220,39 @@
   .filled {
     color: orange;
   }
+
+  @media screen and (max-width: 800px) {
+
+    .header__content {
+    width: 80%;
+  
+  }
+  
+  .header__content_title {
+    font-size: 1rem;
+  }
+
+  .header__cart-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+
+.header__content {
+width: 60%;
+
+}
+
+.header__content_title {
+font-size: 0.9rem;
+}
+
+.header__cart-icon {
+width: 20px;
+height: 20px;
+}
+}
   </style>
   

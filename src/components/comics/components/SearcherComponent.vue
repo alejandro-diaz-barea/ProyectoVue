@@ -41,7 +41,7 @@ export default {
     padding: 8px 30px 8px 10px;
     border: 1px solid #ccc;
     border-radius: 40px;
-    width: 250px;
+    width: 450px;
   }
   
   .search__button {
@@ -54,7 +54,7 @@ export default {
     border: none;
     border-radius: 0 4px 4px 0;
     cursor: pointer;
-    background-color: transparent; /* Hace que el fondo del botón se vea transparente */
+    background-color: transparent; 
     width: 20%;
   }
   
@@ -62,5 +62,33 @@ export default {
     height: 100%;
     width: auto;
   }
+
+
+  @media screen and (max-width: 1000px) {
+
+    .search__input {
+    width: 350px;
+  }
+} 
+
+
+@media screen and (max-width: 800px) {
+
+.search__input {
+width: 220px;
+}
+} 
+
+
+
+@media screen and (max-width: 550px) {
+
+.search__input {
+width: 170px;
+}
+} 
+
+
+
   </style>
       

@@ -9,7 +9,7 @@
           <router-link to="/comics" class="nav__link">COMICS</router-link>
         </li>
         <li class="nav__item">
-          <router-link to="/ofertas" class="nav__link">OFERTAS</router-link>
+          <router-link to="/ofertas" class="nav__link">OFFERS</router-link>
         </li>
         <li class="nav__item">
           <router-link to="/contact" class="nav__link">CONTACT</router-link>
@@ -36,7 +36,7 @@
     <nav v-show="showMenu" class="mobile-menu">
       <button @click="toggleMenu" class="exit-button">X</button>
       <router-link to="/comics" class="nav__link" @click="toggleMenu">COMICS</router-link>
-      <router-link to="/ofertas" class="nav__link" @click="toggleMenu">OFERTAS</router-link>
+      <router-link to="/ofertas" class="nav__link" @click="toggleMenu">OFFERS</router-link>
       <router-link to="/contact" class="nav__link" @click="toggleMenu">CONTACT</router-link>
       <button @click="goToLoginPage" class="buttons__login" v-if="!user">LOGIN</button>
       <button @click="goToSignUpPage" class="buttons__signup" v-if="!user">SIGN UP</button>

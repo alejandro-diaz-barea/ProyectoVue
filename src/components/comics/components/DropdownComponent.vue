@@ -27,6 +27,7 @@ export default {
   <style scoped>
   .order-selector {
     height: 100%;
+
   }
   
   .order-selector__select {
@@ -34,6 +35,14 @@ export default {
     padding: 8px; 
     font-size: 16px; 
     width: 130px;
+    border-radius: 15px;
+    
   }
+  
+  @media screen and (max-width: 550px) {
+  .order-selector{
+    display: none;
+  }
+}
   </style>
   

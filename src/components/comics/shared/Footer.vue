@@ -5,7 +5,7 @@
       <a href="#" class="footerX"><img src="../../../assets/gorjeo.png" alt="Logo de x" class="XLogo"></a>
       <a href="#" class="footerYoutube"><img src="../../../assets/youtube.png" alt="Logo de youtube" class="YoutubeLogo"></a>
       <div class="footer__copyright">
-        <p  class="footer__copyright_p">© 2024 Adiabar. Todos los derechos reservados.</p>
+        <p  class="footer__copyright_p">© 2024 Adiabar. All rights reserved.</p>
       </div>
   </footer>
 </template>

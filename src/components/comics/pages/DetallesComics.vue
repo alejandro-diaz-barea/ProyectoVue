@@ -1,32 +1,37 @@
 <template>
-  <div>
-    <h1>Detalles del Cómic {{ comicTitle }}</h1>
-    <p v-if="loading">Cargando...</p>
-    <div v-else>
-      <img :src="comicImg" alt="Comic Image">
-      <p>Titulo: {{ comicTitle }}</p>
-      <p>Descripción: {{ comicDescription }}</p>
-      <p>Precio: {{ comicPrice }} €</p>
-      <p v-if="totalRatings > 0">Valoraciones totales: {{ totalRatings }}</p>
-      <p v-if="averageRating > 0">Valoración media: {{ averageRating }}</p>
-      <p v-else>No hay valoraciones para este cómic</p>
-
-      <!-- Sección de Comentarios -->
-      <div>
-        <h2>Comentarios</h2>
-        <ul>
-          <li v-for="comment in comments" :key="comment.id" :class="{ 'comment-right': isUserComment(comment.user_id) }">
-            <p>{{ comment.comment }}</p>
-            <p v-if="comment.user">Usuario: {{ comment.user.name }}</p>
-          </li>
-        </ul>
-        <form @submit.prevent="addComment">
-          <textarea v-model="newComment" placeholder="Escribe tu comentario"></textarea>
-          <button type="submit">Agregar Comentario</button>
-        </form>
-      </div>
+  <section class="comic-details">
+    <p v-if="loading" class="comic-details__loading">Cargando...</p>
+    <div v-else class="comic-details__content">
+      <figure class="comic-details__figure">
+        <img :src="comicImg" alt="Comic Image" class="comic-details__image">
+        <figcaption class="comic-details__figcaption">
+          <p class="comic-details__info-title">{{ comicTitle }}</p>
+          <p class="comic-details__info-item"><strong>Descripción:</strong> {{ comicDescription }}</p>
+          <p class="comic-details__info-item"><strong>Precio:</strong> {{ comicPrice }} €</p>
+          <p v-if="totalRatings > 0" class="comic-details__info-item"><strong>Valoraciones totales:</strong> {{ totalRatings }}</p>
+          <p v-if="averageRating > 0" class="comic-details__info-item"><strong>Valoración media:</strong> {{ averageRating }}</p>
+          <p v-else class="comic-details__info-item">No hay valoraciones para este cómic</p>
+        </figcaption>
+      </figure>
     </div>
-  </div>
+
+    <!-- Sección de Comentarios -->
+    <div class="comic-details__comments">
+      <h2 class="comic-details__comments-title">Reviews</h2>
+      <ul class="comic-details__comments-list">
+        <li v-for="comment in comments" :key="comment.id" :class="{ 'comic-details__comment-right': isUserComment(comment.user_id) }">
+          <p>{{ comment.comment }}</p>
+          <p v-if="comment.user" class="comic-details__comment-user">Usuario: {{ comment.user.name }}</p>
+        </li>
+      </ul>
+      <form @submit.prevent="addComment" class="comic-details__comment-form">
+        <div class="comic-details__comment-input-container">
+          <input v-model="newComment" type="text" placeholder="Escribe tu comentario" class="comic-details__comment-input">
+          <button type="submit" class="comic-details__comment-button">➕</button>
+        </div>
+      </form>
+    </div>
+  </section>
 </template>
 
 <script>
@@ -164,44 +169,91 @@ export default {
 </script>
 
 <style scoped>
-img {
-  width: 25%;
-  height: auto;
-}
-
-div {
+.comic-details {
   margin-left: 4rem;
   margin-right: 4rem;
 }
 
-ul {
+.comic-details__figure {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.comic-details__image {
+  width: 25%;
+  height: auto;
+}
+
+.comic-details__figcaption {
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.comic-details__info-item {
+  margin: 0;
+}
+.comic-details__info-title{
+  font-family: 'Bangers', sans-serif;
+  font-size: 2rem;
+  text-align: center;
+
+}
+
+.comic-details__comments {
+  margin-top: 2rem;
+}
+
+.comic-details__comments-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.comic-details__comments-list {
   list-style-type: none;
   padding: 0;
+  margin-left: 7rem;
+  margin-right: 7rem;
 }
 
-li {
-  margin-bottom: 1rem;
-}
-
-.comment-right {
+.comic-details__comment-right {
   text-align: right;
 }
 
-textarea {
-  width: 100%;
-  height: 100px;
-  margin-bottom: 1rem;
+.comic-details__comment-user {
+  font-style: italic;
 }
 
-button {
+.comic-details__comment-input-container {
+  width: 100%;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.comic-details__comment-input {
+  width: 100%; /* El 100% del contenedor */
+  height: 30px;
+  padding-right: 40px; /* Espacio para el botón */
+  border-radius: 20px;
+}
+
+.comic-details__comment-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
 }
 
-button:hover {
+.comic-details__comment-button:hover {
   background-color: #0056b3;
 }
 </style>
