@@ -34,6 +34,12 @@ En cuanto a la guía de estilos de mi app, he optado por utilizar una paleta de 
     - chmod -R 775 storage
     - chmod -R 775 bootstrap/cache
 
+Eso es para los permisos de la API, en cuanto a la realizacion debes de migrar y ejecutar los seeders con los siguientes comandos:
+
+    - ./vendor/bin/sail artisan migrate
+    - ./vendor/bin/sail artisan db:seed --class=NewsSeeder
+    - ./vendor/bin/sail artisan db:seed --class=ComicsSeeder
+
 ## 6. Desarrollo
 
 Durante el desarrollo del backend, me encontré con varios desafíos tras experimentar múltiples fallos inesperados.
@@ -84,12 +90,23 @@ Imagen compra: En esta pantalla, los usuarios pueden ver los detalles simplifica
 Imagen perfil: En esta pantalla, los usuarios pueden ver su correo electrónico, su nombre de usuario y tienen la opción de cerrar sesión. Además, pueden acceder a su historial de compras para revisar las compras realizadas anteriormente.
 
 
-
-
 ## 7. Despliegue
-## 8. Manual
 
+Para el despligue he elegido netlify ya que es un lugar cómodo para subir tu web
+
+![alt text](despliegue.png)
+Imagen de despleigue : Podemos ver que es un simple drag and drop
+
+Enlace del despliegue : https://65e220edffad9200a8180192--fascinating-madeleine-f5d7b4.netlify.app/#/
+
+
+## 9. Tablas de la base de datos
+
+![alt text](BD.png)
+Imagen de base de datos diagrama
 
 ## 9. Conclusiones
+
+Como conclusión, creo que este proyecto me ha ayudado a aprender a organizarme un poco mejor en cuanto a la realización de cada contenido. También creo que he aprendido mucho del backend, ya que es a lo que más he dedicado tiempo, debido a los multiples errores. Me ha servido mucho para aprender un nuevo framework como es Vue, y he aprendido a realizar un diseño más profesional en la web que he desarrollado.
 
 
